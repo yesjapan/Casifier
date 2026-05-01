@@ -1,0 +1,70 @@
+<div id="CasifierConfigPage" data-role="page" class="page type-interior pluginConfigurationPage">
+  <div data-role="content">
+    <div class="content-primary">
+      <form id="CasifierConfigForm">
+        <div class="sectionTitleContainer flex align-items-center">
+          <h2 class="sectionTitle">Casifier</h2>
+        </div>
+
+        <label class="checkboxContainer">
+          <input is="emby-checkbox" type="checkbox" id="Enabled" />
+          <span>Enable Casifier</span>
+        </label>
+
+        <label class="checkboxContainer">
+          <input is="emby-checkbox" type="checkbox" id="RunAfterLibraryScan" />
+          <span>Run after library scans</span>
+        </label>
+
+        <label class="checkboxContainer">
+          <input is="emby-checkbox" type="checkbox" id="OverwritePrimaryPoster" />
+          <span>Replace primary posters with generated case posters</span>
+        </label>
+
+        <div class="inputContainer">
+          <input is="emby-input" id="BackupSuffix" label="Backup suffix" />
+          <div class="fieldDescription">Casifier stores the original poster beside the generated poster using this suffix.</div>
+        </div>
+
+        <div>
+          <button is="emby-button" type="submit" class="raised button-submit block">
+            <span>Save</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    (() => {
+      const pluginId = '6de807d7-041d-4592-a278-91f04a37ec0f';
+      const page = document.querySelector('#CasifierConfigPage');
+
+      page.addEventListener('pageshow', async () => {
+        Dashboard.showLoadingMsg();
+
+        const config = await ApiClient.getPluginConfiguration(pluginId);
+        page.querySelector('#Enabled').checked = config.Enabled ?? true;
+        page.querySelector('#RunAfterLibraryScan').checked = config.RunAfterLibraryScan ?? true;
+        page.querySelector('#OverwritePrimaryPoster').checked = config.OverwritePrimaryPoster ?? true;
+        page.querySelector('#BackupSuffix').value = config.BackupSuffix || '.casifier-original';
+
+        Dashboard.hideLoadingMsg();
+      });
+
+      page.querySelector('#CasifierConfigForm').addEventListener('submit', async event => {
+        event.preventDefault();
+        Dashboard.showLoadingMsg();
+
+        const config = await ApiClient.getPluginConfiguration(pluginId);
+        config.Enabled = page.querySelector('#Enabled').checked;
+        config.RunAfterLibraryScan = page.querySelector('#RunAfterLibraryScan').checked;
+        config.OverwritePrimaryPoster = page.querySelector('#OverwritePrimaryPoster').checked;
+        config.BackupSuffix = page.querySelector('#BackupSuffix').value || '.casifier-original';
+
+        const result = await ApiClient.updatePluginConfiguration(pluginId, config);
+        Dashboard.processPluginConfigurationUpdateResult(result);
+      });
+    })();
+  </script>
+</div>
