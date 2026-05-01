@@ -3,8 +3,8 @@
     "category": "Library",
     "guid": "6de807d7-041d-4592-a278-91f04a37ec0f",
     "name": "Casifier",
-    "description": "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans.",
-    "overview": "Generate media-case posters for Jellyfin movies.",
+    "description": "Casifier wraps movie primary posters with top format banners.",
+    "overview": "Top-banner poster overlays.",
     "owner": "Casifier",
     "imageUrl": "",
     "versions": [

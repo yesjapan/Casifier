@@ -84,9 +84,7 @@
               <rect x="25" y="11" width="130" height="244" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5" />
               <rect x="20" y="34" width="140" height="4" fill="#fff" opacity="0.14" />
               <rect x="20" y="34" width="140" height="6" fill="#000" opacity="0.28" />
-              <rect x="112" y="10" width="38" height="18" fill="#b41f2a" opacity="0.92" />
-              <text x="131" y="24" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#fff">88%</text>
-              <text x="78" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#fff">BLU-RAY</text>
+              <text x="90" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#fff">BLU-RAY</text>
             </svg>
             <div class="casifierPreviewLabel">Blu-ray</div>
             <div class="casifierPreviewMeta">1080p</div>
@@ -111,9 +109,7 @@
               <rect x="25" y="11" width="130" height="244" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5" />
               <rect x="20" y="34" width="140" height="4" fill="#fff" opacity="0.14" />
               <rect x="20" y="34" width="140" height="6" fill="#000" opacity="0.28" />
-              <rect x="112" y="10" width="38" height="18" fill="#b41f2a" opacity="0.92" />
-              <text x="131" y="24" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#fff">94%</text>
-              <text x="76" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#f6d451">ULTRA HD</text>
+              <text x="90" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#f6d451">ULTRA HD</text>
             </svg>
             <div class="casifierPreviewLabel">Ultra HD</div>
             <div class="casifierPreviewMeta">2160p / 4K</div>
@@ -134,16 +130,6 @@
           <input is="emby-checkbox" type="checkbox" id="OverwritePrimaryPoster" />
           <span>Replace primary posters with generated case posters</span>
         </label>
-
-        <label class="checkboxContainer">
-          <input is="emby-checkbox" type="checkbox" id="ShowRottenTomatoesAudienceScore" />
-          <span>Show Rotten Tomatoes audience score when available</span>
-        </label>
-
-        <div class="inputContainer">
-          <input is="emby-input" id="OmdbApiKey" type="password" label="OMDb API key" />
-          <div class="fieldDescription">Used to look up the Rotten Tomatoes audience score from a movie's IMDb ID.</div>
-        </div>
 
         <div class="inputContainer">
           <input is="emby-input" id="BackupSuffix" label="Backup suffix" />
@@ -171,8 +157,6 @@
         page.querySelector('#Enabled').checked = config.Enabled ?? true;
         page.querySelector('#RunAfterLibraryScan').checked = config.RunAfterLibraryScan ?? true;
         page.querySelector('#OverwritePrimaryPoster').checked = config.OverwritePrimaryPoster ?? true;
-        page.querySelector('#ShowRottenTomatoesAudienceScore').checked = config.ShowRottenTomatoesAudienceScore ?? false;
-        page.querySelector('#OmdbApiKey').value = config.OmdbApiKey || '';
         page.querySelector('#BackupSuffix').value = config.BackupSuffix || '.casifier-original';
 
         Dashboard.hideLoadingMsg();
@@ -186,8 +170,6 @@
         config.Enabled = page.querySelector('#Enabled').checked;
         config.RunAfterLibraryScan = page.querySelector('#RunAfterLibraryScan').checked;
         config.OverwritePrimaryPoster = page.querySelector('#OverwritePrimaryPoster').checked;
-        config.ShowRottenTomatoesAudienceScore = page.querySelector('#ShowRottenTomatoesAudienceScore').checked;
-        config.OmdbApiKey = page.querySelector('#OmdbApiKey').value || '';
         config.BackupSuffix = page.querySelector('#BackupSuffix').value || '.casifier-original';
 
         const result = await ApiClient.updatePluginConfiguration(pluginId, config);

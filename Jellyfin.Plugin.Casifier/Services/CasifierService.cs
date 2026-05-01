@@ -12,16 +12,11 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.Globalization;
-using System.Net.Http;
-using System.Text.Json;
 
 namespace Jellyfin.Plugin.Casifier.Services;
 
 public sealed class CasifierService
 {
-    private static readonly HttpClient HttpClient = new();
-
     private readonly ILibraryManager _libraryManager;
     private readonly ILogger<CasifierService> _logger;
 
@@ -94,9 +89,8 @@ public sealed class CasifierService
         }
 
         var caseKind = ResolveCaseKind(stream.Height.Value);
-        var audienceScore = await GetAudienceScoreAsync(movie, config, cancellationToken).ConfigureAwait(false);
         var sourcePath = EnsureBackup(image.Path, config.BackupSuffix);
-        await RenderCaseAsync(sourcePath, image.Path, caseKind, audienceScore, cancellationToken).ConfigureAwait(false);
+        await RenderCaseAsync(sourcePath, image.Path, caseKind, cancellationToken).ConfigureAwait(false);
         File.SetLastWriteTimeUtc(image.Path, DateTime.UtcNow);
         return true;
     }
@@ -131,7 +125,7 @@ public sealed class CasifierService
         return CaseKind.Dvd;
     }
 
-    private static async Task RenderCaseAsync(string sourcePath, string outputPath, CaseKind caseKind, int? audienceScore, CancellationToken cancellationToken)
+    private static async Task RenderCaseAsync(string sourcePath, string outputPath, CaseKind caseKind, CancellationToken cancellationToken)
     {
         using var poster = await Image.LoadAsync<Rgba32>(sourcePath, cancellationToken).ConfigureAwait(false);
 
@@ -158,11 +152,6 @@ public sealed class CasifierService
 
             DrawHighlights(ctx, wholeRect, bandRect);
             DrawLabel(ctx, label, palette.Text, bandRect.X, bandRect.Y, bandRect.Width, bandRect.Height);
-
-            if (audienceScore is not null)
-            {
-                DrawAudienceScore(ctx, audienceScore.Value, bandRect, palette.Text);
-            }
         });
 
         await canvas.SaveAsJpegAsync(outputPath, new JpegEncoder { Quality = 92 }, cancellationToken).ConfigureAwait(false);
@@ -202,95 +191,6 @@ public sealed class CasifierService
         };
 
         ctx.DrawText(textOptions, label, color);
-    }
-
-    private static void DrawAudienceScore(IImageProcessingContext ctx, int score, Rectangle bandRect, Color textColor)
-    {
-        var badgeHeight = Math.Max(46, bandRect.Height / 2);
-        var badgeWidth = Math.Max(116, badgeHeight * 2);
-        var badgeRect = new Rectangle(
-            bandRect.Right - badgeWidth - Math.Max(18, bandRect.Height / 5),
-            bandRect.Y + (bandRect.Height - badgeHeight) / 2,
-            badgeWidth,
-            badgeHeight);
-
-        var fill = score >= 60 ? Color.ParseHex("b41f2a") : Color.ParseHex("5c7f34");
-        ctx.Fill(fill.WithAlpha(0.92f), badgeRect);
-        ctx.Draw(Color.ParseHex("ffffff").WithAlpha(0.35f), 2, badgeRect);
-
-        var bucketFont = ResolveFont(Math.Max(22, badgeHeight * 0.42f));
-        var scoreFont = ResolveFont(Math.Max(26, badgeHeight * 0.48f));
-
-        ctx.DrawText(new RichTextOptions(bucketFont)
-        {
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            Origin = new PointF(badgeRect.X + badgeHeight * 0.45f, badgeRect.Y + badgeHeight / 2f)
-        }, "POP", textColor);
-
-        ctx.DrawText(new RichTextOptions(scoreFont)
-        {
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            Origin = new PointF(badgeRect.X + badgeWidth * 0.68f, badgeRect.Y + badgeHeight / 2f)
-        }, FormattableString.Invariant($"{score}%"), Color.White);
-    }
-
-    private static async Task<int?> GetAudienceScoreAsync(Movie movie, PluginConfiguration config, CancellationToken cancellationToken)
-    {
-        if (!config.ShowRottenTomatoesAudienceScore || string.IsNullOrWhiteSpace(config.OmdbApiKey))
-        {
-            return null;
-        }
-
-        var imdbId = movie.GetProviderId(MetadataProvider.Imdb);
-        if (string.IsNullOrWhiteSpace(imdbId))
-        {
-            return null;
-        }
-
-        var url = string.Create(CultureInfo.InvariantCulture, $"https://www.omdbapi.com/?apikey={Uri.EscapeDataString(config.OmdbApiKey)}&i={Uri.EscapeDataString(imdbId)}&tomatoes=true&r=json");
-        using var response = await HttpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
-        {
-            return null;
-        }
-
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        using var document = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        var root = document.RootElement;
-
-        if (TryReadPercent(root, "tomatoUserMeter", out var tomatoUserMeter))
-        {
-            return tomatoUserMeter;
-        }
-
-        if (root.TryGetProperty("Ratings", out var ratings) && ratings.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var rating in ratings.EnumerateArray())
-            {
-                if (rating.TryGetProperty("Source", out var source)
-                    && string.Equals(source.GetString(), "Rotten Tomatoes", StringComparison.OrdinalIgnoreCase)
-                    && TryReadPercent(rating, "Value", out var score))
-                {
-                    return score;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private static bool TryReadPercent(JsonElement element, string propertyName, out int score)
-    {
-        score = 0;
-        if (!element.TryGetProperty(propertyName, out var property))
-        {
-            return false;
-        }
-
-        var value = property.GetString()?.Trim().TrimEnd('%');
-        return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out score);
     }
 
     private static Font ResolveFont(float size)
