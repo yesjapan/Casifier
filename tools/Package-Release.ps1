@@ -1,19 +1,24 @@
 param(
-    [string]$Version = "0.1.0.0",
+    [string]$Version = "0.1.1.0",
     [string]$Configuration = "Release",
+    [string]$Framework = "net9.0",
+    [string]$TargetAbi = "10.11.6.0",
     [string]$SourceUrl = ""
 )
 
 $ErrorActionPreference = "Stop"
 
 $root = Resolve-Path (Join-Path $PSScriptRoot "..")
-$publishDir = Join-Path $root "Jellyfin.Plugin.Casifier\bin\$Configuration\net9.0\publish"
+$publishDir = Join-Path $root "Jellyfin.Plugin.Casifier\bin\$Configuration\$Framework\publish"
 $distDir = Join-Path $root "dist"
 $zipPath = Join-Path $distDir "Casifier_$Version.zip"
 $manifestPath = Join-Path $root "repository\manifest.json"
 
 $env:DOTNET_CLI_HOME = $root
 dotnet publish (Join-Path $root "Casifier.sln") -c $Configuration
+if ($LASTEXITCODE -ne 0) {
+    throw "dotnet publish failed with exit code $LASTEXITCODE"
+}
 
 New-Item -ItemType Directory -Force -Path $distDir | Out-Null
 if (Test-Path $zipPath) {
@@ -26,6 +31,7 @@ $checksum = (Get-FileHash -Algorithm MD5 -LiteralPath $zipPath).Hash.ToLowerInva
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 $plugin = $manifest[0]
 $plugin.versions[0].version = $Version
+$plugin.versions[0].targetAbi = $TargetAbi
 $plugin.versions[0].checksum = $checksum
 $plugin.versions[0].timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 

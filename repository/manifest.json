@@ -9,12 +9,12 @@
     "imageUrl":  "",
     "versions":  [
                      {
-                         "version":  "0.1.0.0",
+                         "version":  "0.1.1.0",
                          "changelog":  "Initial plugin scaffold with scheduled task support, post-scan processing, settings page, and generated case posters.",
-                         "targetAbi":  "10.11.0.0",
-                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.0.0/Casifier_0.1.0.0.zip",
-                         "checksum":  "25231882e411470cd1cf63e5b408e63f",
-                         "timestamp":  "2026-05-01T02:49:18Z"
+                         "targetAbi":  "10.11.6.0",
+                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.1.0/Casifier_0.1.1.0.zip",
+                         "checksum":  "de21630caf62ac2b38c24ff24360707d",
+                         "timestamp":  "2026-05-01T03:00:14Z"
                      }
                  ]
 }

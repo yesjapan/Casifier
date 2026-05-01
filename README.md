@@ -1,6 +1,6 @@
 # Casifier
 
-Casifier is a Jellyfin plugin that renders movie primary posters into media-case artwork based on the movie resolution:
+Casifier is a Jellyfin 10.11.6-compatible plugin that renders movie primary posters into media-case artwork based on the movie resolution:
 
 - DVD for SD/720p movies
 - Blu-ray for 1080p movies
@@ -39,8 +39,8 @@ You can package a release and update the manifest checksum with:
 
 ```powershell
 .\tools\Package-Release.ps1 `
-  -Version 0.1.0.0 `
-  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.0.0/Casifier_0.1.0.0.zip"
+  -Version 0.1.1.0 `
+  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.1.0/Casifier_0.1.1.0.zip"
 ```
 
 For the `yesjapan/Casifier` GitHub repo, the Jellyfin repository URL will be:
@@ -64,13 +64,13 @@ Then create the public GitHub repo, push this project, and publish the first rel
 ```powershell
 gh repo create yesjapan/Casifier --public --source . --push
 
-gh release create v0.1.0.0 `
-  .\dist\Casifier_0.1.0.0.zip `
+gh release create v0.1.1.0 `
+  .\dist\Casifier_0.1.1.0.zip `
   --repo yesjapan/Casifier `
-  --title "Casifier 0.1.0.0" `
-  --notes "Initial plugin release."
+  --title "Casifier 0.1.1.0" `
+  --notes "Retargeted for Jellyfin 10.11.6 compatibility."
 ```
 
 ## Notes
 
-This initial version targets Jellyfin 10.11.x packages. If your server is older, adjust the Jellyfin package versions in the project file to match your server.
+This version targets Jellyfin 10.11.6 packages.

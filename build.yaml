@@ -1,8 +1,8 @@
 ---
 name: "Casifier"
 guid: "6de807d7-041d-4592-a278-91f04a37ec0f"
-version: "0.1.0.0"
-targetAbi: "10.11.0.0"
+version: "0.1.1.0"
+targetAbi: "10.11.6.0"
 framework: "net9.0"
 overview: "Generate DVD, Blu-ray, and Ultra HD case posters for Jellyfin movies."
 description: >
@@ -17,5 +17,4 @@ artifacts:
   - "SixLabors.ImageSharp.dll"
   - "SixLabors.ImageSharp.Drawing.dll"
 changelog: >
-  Initial plugin scaffold with scheduled task support, post-scan processing,
-  settings page, and generated case posters.
+  Retargeted the plugin for Jellyfin 10.11.6 compatibility.
