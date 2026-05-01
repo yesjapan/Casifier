@@ -9,12 +9,12 @@
     "imageUrl":  "",
     "versions":  [
                      {
-                         "version":  "0.1.9.0",
-                         "changelog":  "Use the highest available movie version resolution when choosing the format banner.",
+                         "version":  "0.1.10.0",
+                         "changelog":  "Detect resolution from media source and file names when stream height metadata is missing.",
                          "targetAbi":  "10.11.6.0",
-                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.9.0/Casifier_0.1.9.0.zip",
-                         "checksum":  "8053c92783f7dd0774f7d0ad944d3cdb",
-                         "timestamp":  "2026-05-01T05:21:45Z"
+                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.10.0/Casifier_0.1.10.0.zip",
+                         "checksum":  "95262e0b283b7e6a19efaf9c4ef17dcc",
+                         "timestamp":  "2026-05-01T05:56:28Z"
                      }
                  ]
 }

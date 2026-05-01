@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.1.9.0",
+    [string]$Version = "0.1.10.0",
     [string]$Configuration = "Release",
     [string]$Framework = "net9.0",
     [string]$TargetAbi = "10.11.6.0",
@@ -29,7 +29,7 @@ if (Test-Path $zipPath) {
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $metadata = [ordered]@{
     category = "Library"
-    changelog = "Use the highest available movie version resolution when choosing the format banner."
+    changelog = "Detect resolution from media source and file names when stream height metadata is missing."
     description = "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans."
     guid = "6de807d7-041d-4592-a278-91f04a37ec0f"
     imageUrl = ""

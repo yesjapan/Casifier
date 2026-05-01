@@ -134,6 +134,29 @@ public sealed class CasifierService
             heights.AddRange(source.MediaStreams
                 .Where(stream => stream.Type == MediaStreamType.Video && stream.Height.HasValue)
                 .Select(stream => stream.Height!.Value));
+
+            if (TryInferHeight(source.Name, out var sourceNameHeight))
+            {
+                heights.Add(sourceNameHeight);
+            }
+
+            if (TryInferHeight(source.Path, out var sourcePathHeight))
+            {
+                heights.Add(sourcePathHeight);
+            }
+
+            foreach (var stream in source.MediaStreams.Where(stream => stream.Type == MediaStreamType.Video))
+            {
+                if (TryInferHeight(stream.DisplayTitle, out var displayHeight))
+                {
+                    heights.Add(displayHeight);
+                }
+
+                if (TryInferHeight(stream.Codec, out var codecHeight))
+                {
+                    heights.Add(codecHeight);
+                }
+            }
         }
 
         var defaultStream = movie.GetDefaultVideoStream();
@@ -144,6 +167,45 @@ public sealed class CasifierService
 
         return heights.Count == 0 ? null : heights.Max();
     }
+
+    private static bool TryInferHeight(string? value, out int height)
+    {
+        height = 0;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        var normalized = value.ToUpperInvariant();
+        if (ContainsAny(normalized, "2160P", "2160", "4K", "UHD", "ULTRAHD", "ULTRA HD"))
+        {
+            height = 2160;
+            return true;
+        }
+
+        if (ContainsAny(normalized, "1080P", "1080", "FHD", "FULLHD", "FULL HD", "BLURAY", "BLU-RAY", "BDRIP", "BDREMUX", "BD REMUX"))
+        {
+            height = 1080;
+            return true;
+        }
+
+        if (ContainsAny(normalized, "720P", "720"))
+        {
+            height = 720;
+            return true;
+        }
+
+        if (ContainsAny(normalized, "DVD", "DVDRIP", "DVD-RIP"))
+        {
+            height = 480;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool ContainsAny(string value, params string[] candidates)
+        => candidates.Any(candidate => value.Contains(candidate, StringComparison.OrdinalIgnoreCase));
 
     private static async Task RenderCaseAsync(string sourcePath, string outputPath, CaseKind caseKind, CancellationToken cancellationToken)
     {
