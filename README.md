@@ -39,8 +39,8 @@ You can package a release and update the manifest checksum with:
 
 ```powershell
 .\tools\Package-Release.ps1 `
-  -Version 0.1.6.0 `
-  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.6.0/Casifier_0.1.6.0.zip"
+  -Version 0.1.7.0 `
+  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.7.0/Casifier_0.1.7.0.zip"
 ```
 
 For the `yesjapan/Casifier` GitHub repo, the Jellyfin repository URL will be:
@@ -79,6 +79,12 @@ For the stabilized overlay build without experimental score lookup code, use:
 https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.6.0.json
 ```
 
+For the diagnostic `0.1.7.0` build, use:
+
+```text
+https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.7.0.json
+```
+
 After the repo exists and the release ZIP is attached to a GitHub release, add that URL in Jellyfin under Dashboard -> Plugins -> Repositories.
 
 ## GitHub Setup
@@ -94,11 +100,11 @@ Then create the public GitHub repo, push this project, and publish the first rel
 ```powershell
 gh repo create yesjapan/Casifier --public --source . --push
 
-gh release create v0.1.6.0 `
-  .\dist\Casifier_0.1.6.0.zip `
+gh release create v0.1.7.0 `
+  .\dist\Casifier_0.1.7.0.zip `
   --repo yesjapan/Casifier `
-  --title "Casifier 0.1.6.0" `
-  --notes "Stabilized the top-banner overlay release by removing experimental audience-score lookup code."
+  --title "Casifier 0.1.7.0" `
+  --notes "Diagnostic build using the last known stable settings surface with top-banner overlay code."
 ```
 
 ## Notes

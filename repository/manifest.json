@@ -9,12 +9,12 @@
     "imageUrl":  "",
     "versions":  [
                      {
-                         "version":  "0.1.6.0",
-                         "changelog":  "Stabilized the top-banner overlay release by removing experimental audience-score lookup code.",
+                         "version":  "0.1.7.0",
+                         "changelog":  "Diagnostic build using the last known stable settings surface with top-banner overlay code.",
                          "targetAbi":  "10.11.6.0",
-                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.6.0/Casifier_0.1.6.0.zip",
-                         "checksum":  "e19dbdd1aec761f755bc33a152981603",
-                         "timestamp":  "2026-05-01T04:28:19Z"
+                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.7.0/Casifier_0.1.7.0.zip",
+                         "checksum":  "1df9ae333d6866aac5be51ee14971b28",
+                         "timestamp":  "2026-05-01T04:38:42Z"
                      }
                  ]
 }

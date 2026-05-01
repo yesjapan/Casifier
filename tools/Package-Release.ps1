@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.1.6.0",
+    [string]$Version = "0.1.7.0",
     [string]$Configuration = "Release",
     [string]$Framework = "net9.0",
     [string]$TargetAbi = "10.11.6.0",
@@ -29,7 +29,7 @@ if (Test-Path $zipPath) {
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $metadata = [ordered]@{
     category = "Library"
-    changelog = "Stabilized the top-banner overlay release by removing experimental audience-score lookup code."
+    changelog = "Diagnostic build using the last known stable settings surface with top-banner overlay code."
     description = "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans."
     guid = "6de807d7-041d-4592-a278-91f04a37ec0f"
     imageUrl = ""
