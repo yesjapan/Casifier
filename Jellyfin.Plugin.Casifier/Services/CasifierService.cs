@@ -140,22 +140,21 @@ public sealed class CasifierService
         poster.Mutate(x => x.Resize(posterWidth, targetHeight));
 
         var topBandHeight = Math.Max(92, targetHeight / 14);
-        var padding = Math.Max(24, posterWidth / 32);
-        var canvasWidth = posterWidth + padding * 2;
-        var canvasHeight = targetHeight + topBandHeight + padding * 2;
+        var canvasWidth = posterWidth;
+        var canvasHeight = targetHeight;
 
-        using var canvas = new Image<Rgba32>(canvasWidth, canvasHeight, Color.Transparent);
+        using var canvas = new Image<Rgba32>(canvasWidth, canvasHeight, Color.Black);
         var palette = GetPalette(caseKind);
         var label = GetLabel(caseKind);
 
         canvas.Mutate(ctx =>
         {
-            var posterRect = new Rectangle(padding, padding + topBandHeight, posterWidth, targetHeight);
-            var bandRect = new Rectangle(padding, padding, posterWidth, topBandHeight);
-            var wholeRect = new Rectangle(padding, padding, posterWidth, targetHeight + topBandHeight);
+            var posterRect = new Rectangle(0, 0, posterWidth, targetHeight);
+            var bandRect = new Rectangle(0, 0, posterWidth, topBandHeight);
+            var wholeRect = new Rectangle(0, 0, posterWidth, targetHeight);
 
-            ctx.Fill(palette.Band, bandRect);
             ctx.DrawImage(poster, posterRect.Location, 1f);
+            ctx.Fill(palette.Band.WithAlpha(0.94f), bandRect);
 
             DrawHighlights(ctx, wholeRect, bandRect);
             DrawLabel(ctx, label, palette.Text, bandRect.X, bandRect.Y, bandRect.Width, bandRect.Height);
@@ -187,8 +186,7 @@ public sealed class CasifierService
 
     private static void DrawHighlights(IImageProcessingContext ctx, Rectangle wholeRect, Rectangle bandRect)
     {
-        ctx.Draw(Color.ParseHex("000000"), 3, wholeRect);
-        ctx.Draw(Color.ParseHex("ffffff").WithAlpha(0.35f), 2, new Rectangle(wholeRect.X + 5, wholeRect.Y + 5, wholeRect.Width - 10, wholeRect.Height - 10));
+        ctx.Draw(Color.ParseHex("000000"), 2, wholeRect);
         ctx.Fill(Color.ParseHex("ffffff").WithAlpha(0.14f), new Rectangle(bandRect.X, bandRect.Y + bandRect.Height - 4, bandRect.Width, 4));
         ctx.Fill(Color.ParseHex("000000").WithAlpha(0.28f), new Rectangle(bandRect.X, bandRect.Y + bandRect.Height, bandRect.Width, 8));
     }
