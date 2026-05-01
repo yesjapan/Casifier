@@ -61,6 +61,12 @@ If Jellyfin keeps showing an older cached version, use the versioned manifest UR
 https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.4.0.json
 ```
 
+If Jellyfin still shows an older version, use the force manifest URL:
+
+```text
+https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/casifier-force-0.1.4.json
+```
+
 After the repo exists and the release ZIP is attached to a GitHub release, add that URL in Jellyfin under Dashboard -> Plugins -> Repositories.
 
 ## GitHub Setup
