@@ -49,6 +49,12 @@ For the `yesjapan/Casifier` GitHub repo, the Jellyfin repository URL will be:
 https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest.json
 ```
 
+For Jellyfin 10.11.6 specifically, this cache-busting manifest URL is also available:
+
+```text
+https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6.json
+```
+
 After the repo exists and the release ZIP is attached to a GitHub release, add that URL in Jellyfin under Dashboard -> Plugins -> Repositories.
 
 ## GitHub Setup

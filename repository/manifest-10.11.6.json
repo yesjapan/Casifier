@@ -1,0 +1,21 @@
+[
+  {
+    "category": "Library",
+    "guid": "6de807d7-041d-4592-a278-91f04a37ec0f",
+    "name": "Casifier",
+    "description": "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans.",
+    "overview": "Generate media-case posters for Jellyfin movies.",
+    "owner": "Casifier",
+    "imageUrl": "",
+    "versions": [
+      {
+        "version": "0.1.1.0",
+        "changelog": "Retargeted for Jellyfin 10.11.6 compatibility.",
+        "targetAbi": "10.11.6.0",
+        "sourceUrl": "https://github.com/yesjapan/Casifier/releases/download/v0.1.1.0/Casifier_0.1.1.0.zip",
+        "checksum": "de21630caf62ac2b38c24ff24360707d",
+        "timestamp": "2026-05-01T03:00:14Z"
+      }
+    ]
+  }
+]
