@@ -9,12 +9,12 @@
     "imageUrl": "",
     "versions": [
       {
-        "version": "0.1.1.0",
-        "changelog": "Retargeted for Jellyfin 10.11.6 compatibility.",
+        "version": "0.1.2.0",
+        "changelog": "Added Jellyfin package metadata to release ZIPs.",
         "targetAbi": "10.11.6.0",
-        "sourceUrl": "https://github.com/yesjapan/Casifier/releases/download/v0.1.1.0/Casifier_0.1.1.0.zip",
-        "checksum": "de21630caf62ac2b38c24ff24360707d",
-        "timestamp": "2026-05-01T03:00:14Z"
+        "sourceUrl": "https://github.com/yesjapan/Casifier/releases/download/v0.1.2.0/Casifier_0.1.2.0.zip",
+        "checksum": "dce85fb9023f85b4440d7f4f2306836d",
+        "timestamp": "2026-05-01T03:12:41Z"
       }
     ]
   }
