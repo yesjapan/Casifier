@@ -9,12 +9,12 @@
     "imageUrl":  "",
     "versions":  [
                      {
-                         "version":  "0.1.7.0",
-                         "changelog":  "Diagnostic build using the last known stable settings surface with top-banner overlay code.",
+                         "version":  "0.1.8.0",
+                         "changelog":  "Updated settings previews to show the format banner overlaying the poster.",
                          "targetAbi":  "10.11.6.0",
-                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.7.0/Casifier_0.1.7.0.zip",
-                         "checksum":  "1df9ae333d6866aac5be51ee14971b28",
-                         "timestamp":  "2026-05-01T04:38:42Z"
+                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.8.0/Casifier_0.1.8.0.zip",
+                         "checksum":  "0eab395ac32815f707abbf8759be1536",
+                         "timestamp":  "2026-05-01T05:08:23Z"
                      }
                  ]
 }
