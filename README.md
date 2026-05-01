@@ -39,8 +39,8 @@ You can package a release and update the manifest checksum with:
 
 ```powershell
 .\tools\Package-Release.ps1 `
-  -Version 0.1.3.0 `
-  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.3.0/Casifier_0.1.3.0.zip"
+  -Version 0.1.4.0 `
+  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.4.0/Casifier_0.1.4.0.zip"
 ```
 
 For the `yesjapan/Casifier` GitHub repo, the Jellyfin repository URL will be:
@@ -70,11 +70,11 @@ Then create the public GitHub repo, push this project, and publish the first rel
 ```powershell
 gh repo create yesjapan/Casifier --public --source . --push
 
-gh release create v0.1.3.0 `
-  .\dist\Casifier_0.1.3.0.zip `
+gh release create v0.1.4.0 `
+  .\dist\Casifier_0.1.4.0.zip `
   --repo yesjapan/Casifier `
-  --title "Casifier 0.1.3.0" `
-  --notes "Added case artwork previews to the plugin settings page."
+  --title "Casifier 0.1.4.0" `
+  --notes "Changed generated covers to use top banners and added optional OMDb audience score badges."
 ```
 
 ## Notes

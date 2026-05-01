@@ -12,5 +12,9 @@ public class PluginConfiguration : BasePluginConfiguration
 
     public bool OverwritePrimaryPoster { get; set; } = true;
 
+    public bool ShowRottenTomatoesAudienceScore { get; set; }
+
+    public string OmdbApiKey { get; set; } = string.Empty;
+
     public string BackupSuffix { get; set; } = ".casifier-original";
 }

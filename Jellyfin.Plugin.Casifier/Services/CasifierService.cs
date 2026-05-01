@@ -1,4 +1,5 @@
 using Jellyfin.Data.Enums;
+using Jellyfin.Plugin.Casifier.Configuration;
 using Jellyfin.Plugin.Casifier.Models;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
@@ -11,11 +12,16 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.Globalization;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace Jellyfin.Plugin.Casifier.Services;
 
 public sealed class CasifierService
 {
+    private static readonly HttpClient HttpClient = new();
+
     private readonly ILibraryManager _libraryManager;
     private readonly ILogger<CasifierService> _logger;
 
@@ -53,7 +59,7 @@ public sealed class CasifierService
 
             try
             {
-                if (await ProcessMovieAsync(movies[index], config.BackupSuffix, cancellationToken).ConfigureAwait(false))
+                if (await ProcessMovieAsync(movies[index], config, cancellationToken).ConfigureAwait(false))
                 {
                     updated++;
                 }
@@ -73,7 +79,7 @@ public sealed class CasifierService
         return new CasifierResult(movies.Count, updated, skipped, failed);
     }
 
-    private static async Task<bool> ProcessMovieAsync(Movie movie, string backupSuffix, CancellationToken cancellationToken)
+    private static async Task<bool> ProcessMovieAsync(Movie movie, PluginConfiguration config, CancellationToken cancellationToken)
     {
         var image = movie.GetImageInfo(ImageType.Primary, 0);
         if (image is null || string.IsNullOrWhiteSpace(image.Path) || !File.Exists(image.Path))
@@ -88,8 +94,9 @@ public sealed class CasifierService
         }
 
         var caseKind = ResolveCaseKind(stream.Height.Value);
-        var sourcePath = EnsureBackup(image.Path, backupSuffix);
-        await RenderCaseAsync(sourcePath, image.Path, caseKind, cancellationToken).ConfigureAwait(false);
+        var audienceScore = await GetAudienceScoreAsync(movie, config, cancellationToken).ConfigureAwait(false);
+        var sourcePath = EnsureBackup(image.Path, config.BackupSuffix);
+        await RenderCaseAsync(sourcePath, image.Path, caseKind, audienceScore, cancellationToken).ConfigureAwait(false);
         File.SetLastWriteTimeUtc(image.Path, DateTime.UtcNow);
         return true;
     }
@@ -124,7 +131,7 @@ public sealed class CasifierService
         return CaseKind.Dvd;
     }
 
-    private static async Task RenderCaseAsync(string sourcePath, string outputPath, CaseKind caseKind, CancellationToken cancellationToken)
+    private static async Task RenderCaseAsync(string sourcePath, string outputPath, CaseKind caseKind, int? audienceScore, CancellationToken cancellationToken)
     {
         using var poster = await Image.LoadAsync<Rgba32>(sourcePath, cancellationToken).ConfigureAwait(false);
 
@@ -132,10 +139,9 @@ public sealed class CasifierService
         var posterWidth = (int)Math.Round(poster.Width * (targetHeight / (double)poster.Height));
         poster.Mutate(x => x.Resize(posterWidth, targetHeight));
 
-        var spineWidth = Math.Max(68, posterWidth / 12);
         var topBandHeight = Math.Max(92, targetHeight / 14);
         var padding = Math.Max(24, posterWidth / 32);
-        var canvasWidth = posterWidth + spineWidth + padding * 2;
+        var canvasWidth = posterWidth + padding * 2;
         var canvasHeight = targetHeight + topBandHeight + padding * 2;
 
         using var canvas = new Image<Rgba32>(canvasWidth, canvasHeight, Color.Transparent);
@@ -144,14 +150,20 @@ public sealed class CasifierService
 
         canvas.Mutate(ctx =>
         {
-            var caseRect = new Rectangle(padding, padding, posterWidth + spineWidth, targetHeight + topBandHeight);
-            ctx.Fill(Color.ParseHex("111111"), caseRect);
-            ctx.Fill(palette.Spine, new Rectangle(padding, padding, spineWidth, caseRect.Height));
-            ctx.Fill(palette.Band, new Rectangle(padding + spineWidth, padding, posterWidth, topBandHeight));
-            ctx.DrawImage(poster, new Point(padding + spineWidth, padding + topBandHeight), 1f);
+            var posterRect = new Rectangle(padding, padding + topBandHeight, posterWidth, targetHeight);
+            var bandRect = new Rectangle(padding, padding, posterWidth, topBandHeight);
+            var wholeRect = new Rectangle(padding, padding, posterWidth, targetHeight + topBandHeight);
 
-            DrawHighlights(ctx, caseRect, spineWidth, padding);
-            DrawLabel(ctx, label, palette.Text, padding + spineWidth, padding, posterWidth, topBandHeight);
+            ctx.Fill(palette.Band, bandRect);
+            ctx.DrawImage(poster, posterRect.Location, 1f);
+
+            DrawHighlights(ctx, wholeRect, bandRect);
+            DrawLabel(ctx, label, palette.Text, bandRect.X, bandRect.Y, bandRect.Width, bandRect.Height);
+
+            if (audienceScore is not null)
+            {
+                DrawAudienceScore(ctx, audienceScore.Value, bandRect, palette.Text);
+            }
         });
 
         await canvas.SaveAsJpegAsync(outputPath, new JpegEncoder { Quality = 92 }, cancellationToken).ConfigureAwait(false);
@@ -173,12 +185,12 @@ public sealed class CasifierService
             _ => "DVD"
         };
 
-    private static void DrawHighlights(IImageProcessingContext ctx, Rectangle caseRect, int spineWidth, int padding)
+    private static void DrawHighlights(IImageProcessingContext ctx, Rectangle wholeRect, Rectangle bandRect)
     {
-        ctx.Draw(Color.ParseHex("000000"), 3, caseRect);
-        ctx.Draw(Color.ParseHex("ffffff").WithAlpha(0.35f), 2, new Rectangle(caseRect.X + 5, caseRect.Y + 5, caseRect.Width - 10, caseRect.Height - 10));
-        ctx.Fill(Color.ParseHex("ffffff").WithAlpha(0.14f), new Rectangle(padding + spineWidth - 4, padding, 4, caseRect.Height));
-        ctx.Fill(Color.ParseHex("000000").WithAlpha(0.35f), new Rectangle(padding + spineWidth, padding, 8, caseRect.Height));
+        ctx.Draw(Color.ParseHex("000000"), 3, wholeRect);
+        ctx.Draw(Color.ParseHex("ffffff").WithAlpha(0.35f), 2, new Rectangle(wholeRect.X + 5, wholeRect.Y + 5, wholeRect.Width - 10, wholeRect.Height - 10));
+        ctx.Fill(Color.ParseHex("ffffff").WithAlpha(0.14f), new Rectangle(bandRect.X, bandRect.Y + bandRect.Height - 4, bandRect.Width, 4));
+        ctx.Fill(Color.ParseHex("000000").WithAlpha(0.28f), new Rectangle(bandRect.X, bandRect.Y + bandRect.Height, bandRect.Width, 8));
     }
 
     private static void DrawLabel(IImageProcessingContext ctx, string label, Color color, int x, int y, int width, int height)
@@ -192,6 +204,95 @@ public sealed class CasifierService
         };
 
         ctx.DrawText(textOptions, label, color);
+    }
+
+    private static void DrawAudienceScore(IImageProcessingContext ctx, int score, Rectangle bandRect, Color textColor)
+    {
+        var badgeHeight = Math.Max(46, bandRect.Height / 2);
+        var badgeWidth = Math.Max(116, badgeHeight * 2);
+        var badgeRect = new Rectangle(
+            bandRect.Right - badgeWidth - Math.Max(18, bandRect.Height / 5),
+            bandRect.Y + (bandRect.Height - badgeHeight) / 2,
+            badgeWidth,
+            badgeHeight);
+
+        var fill = score >= 60 ? Color.ParseHex("b41f2a") : Color.ParseHex("5c7f34");
+        ctx.Fill(fill.WithAlpha(0.92f), badgeRect);
+        ctx.Draw(Color.ParseHex("ffffff").WithAlpha(0.35f), 2, badgeRect);
+
+        var bucketFont = ResolveFont(Math.Max(22, badgeHeight * 0.42f));
+        var scoreFont = ResolveFont(Math.Max(26, badgeHeight * 0.48f));
+
+        ctx.DrawText(new RichTextOptions(bucketFont)
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = new PointF(badgeRect.X + badgeHeight * 0.45f, badgeRect.Y + badgeHeight / 2f)
+        }, "POP", textColor);
+
+        ctx.DrawText(new RichTextOptions(scoreFont)
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = new PointF(badgeRect.X + badgeWidth * 0.68f, badgeRect.Y + badgeHeight / 2f)
+        }, FormattableString.Invariant($"{score}%"), Color.White);
+    }
+
+    private static async Task<int?> GetAudienceScoreAsync(Movie movie, PluginConfiguration config, CancellationToken cancellationToken)
+    {
+        if (!config.ShowRottenTomatoesAudienceScore || string.IsNullOrWhiteSpace(config.OmdbApiKey))
+        {
+            return null;
+        }
+
+        var imdbId = movie.GetProviderId(MetadataProvider.Imdb);
+        if (string.IsNullOrWhiteSpace(imdbId))
+        {
+            return null;
+        }
+
+        var url = string.Create(CultureInfo.InvariantCulture, $"https://www.omdbapi.com/?apikey={Uri.EscapeDataString(config.OmdbApiKey)}&i={Uri.EscapeDataString(imdbId)}&tomatoes=true&r=json");
+        using var response = await HttpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        using var document = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var root = document.RootElement;
+
+        if (TryReadPercent(root, "tomatoUserMeter", out var tomatoUserMeter))
+        {
+            return tomatoUserMeter;
+        }
+
+        if (root.TryGetProperty("Ratings", out var ratings) && ratings.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var rating in ratings.EnumerateArray())
+            {
+                if (rating.TryGetProperty("Source", out var source)
+                    && string.Equals(source.GetString(), "Rotten Tomatoes", StringComparison.OrdinalIgnoreCase)
+                    && TryReadPercent(rating, "Value", out var score))
+                {
+                    return score;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static bool TryReadPercent(JsonElement element, string propertyName, out int score)
+    {
+        score = 0;
+        if (!element.TryGetProperty(propertyName, out var property))
+        {
+            return false;
+        }
+
+        var value = property.GetString()?.Trim().TrimEnd('%');
+        return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out score);
     }
 
     private static Font ResolveFont(float size)

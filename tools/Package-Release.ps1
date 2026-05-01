@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.1.3.0",
+    [string]$Version = "0.1.4.0",
     [string]$Configuration = "Release",
     [string]$Framework = "net9.0",
     [string]$TargetAbi = "10.11.6.0",
@@ -29,7 +29,7 @@ if (Test-Path $zipPath) {
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $metadata = [ordered]@{
     category = "Library"
-    changelog = "Added case artwork previews to the plugin settings page."
+    changelog = "Changed generated covers to use top banners and added optional OMDb audience score badges."
     description = "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans."
     guid = "6de807d7-041d-4592-a278-91f04a37ec0f"
     imageUrl = ""
