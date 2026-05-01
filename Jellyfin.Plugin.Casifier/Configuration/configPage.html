@@ -6,6 +6,119 @@
           <h2 class="sectionTitle">Casifier</h2>
         </div>
 
+        <style>
+          .casifierPreviewGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(8.5em, 1fr));
+            gap: 1.25em;
+            margin: 1em 0 2em;
+            max-width: 42em;
+          }
+
+          .casifierPreviewItem {
+            min-width: 0;
+          }
+
+          .casifierPreviewItem svg {
+            display: block;
+            width: 100%;
+            max-width: 11em;
+            height: auto;
+            filter: drop-shadow(0 0.9em 0.9em rgba(0, 0, 0, 0.35));
+          }
+
+          .casifierPreviewLabel {
+            margin-top: 0.65em;
+            font-weight: 600;
+          }
+
+          .casifierPreviewMeta {
+            margin-top: 0.2em;
+            color: var(--secondaryTextColor);
+            font-size: 0.9em;
+          }
+        </style>
+
+        <div class="casifierPreviewGrid" aria-label="Generated case preview samples">
+          <div class="casifierPreviewItem">
+            <svg viewBox="0 0 180 278" role="img" aria-label="DVD preview">
+              <defs>
+                <linearGradient id="casifierPosterDvd" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#d95d39" />
+                  <stop offset="0.58" stop-color="#253858" />
+                  <stop offset="1" stop-color="#101820" />
+                </linearGradient>
+              </defs>
+              <rect x="8" y="6" width="164" height="254" rx="2" fill="#111" />
+              <rect x="8" y="6" width="22" height="254" fill="#d8d8d8" />
+              <rect x="30" y="6" width="132" height="26" fill="#f2f2f2" />
+              <rect x="30" y="32" width="132" height="218" fill="url(#casifierPosterDvd)" />
+              <circle cx="119" cy="82" r="27" fill="#ffd166" opacity="0.9" />
+              <path d="M30 202 L68 152 L93 178 L116 138 L162 212 L162 250 L30 250 Z" fill="#0c1624" opacity="0.82" />
+              <text x="96" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#fff">POSTER</text>
+              <rect x="8" y="6" width="164" height="254" fill="none" stroke="#000" stroke-width="3" />
+              <rect x="13" y="11" width="154" height="244" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5" />
+              <rect x="28" y="6" width="3" height="254" fill="#fff" opacity="0.14" />
+              <rect x="31" y="6" width="5" height="254" fill="#000" opacity="0.35" />
+              <text x="96" y="24" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#202020">DVD</text>
+            </svg>
+            <div class="casifierPreviewLabel">DVD</div>
+            <div class="casifierPreviewMeta">SD / 720p</div>
+          </div>
+
+          <div class="casifierPreviewItem">
+            <svg viewBox="0 0 180 278" role="img" aria-label="Blu-ray preview">
+              <defs>
+                <linearGradient id="casifierPosterBluray" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#79d2c0" />
+                  <stop offset="0.58" stop-color="#42526e" />
+                  <stop offset="1" stop-color="#172b4d" />
+                </linearGradient>
+              </defs>
+              <rect x="8" y="6" width="164" height="254" rx="2" fill="#111" />
+              <rect x="8" y="6" width="22" height="254" fill="#0b3477" />
+              <rect x="30" y="6" width="132" height="26" fill="#1658ba" />
+              <rect x="30" y="32" width="132" height="218" fill="url(#casifierPosterBluray)" />
+              <ellipse cx="96" cy="99" rx="48" ry="58" fill="#d6f6ff" opacity="0.18" />
+              <path d="M46 200 C70 170 94 177 109 204 C121 226 144 215 158 198 L158 250 L46 250 Z" fill="#102a43" opacity="0.86" />
+              <text x="96" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#fff">POSTER</text>
+              <rect x="8" y="6" width="164" height="254" fill="none" stroke="#000" stroke-width="3" />
+              <rect x="13" y="11" width="154" height="244" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5" />
+              <rect x="28" y="6" width="3" height="254" fill="#fff" opacity="0.14" />
+              <rect x="31" y="6" width="5" height="254" fill="#000" opacity="0.35" />
+              <text x="96" y="24" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#fff">BLU-RAY</text>
+            </svg>
+            <div class="casifierPreviewLabel">Blu-ray</div>
+            <div class="casifierPreviewMeta">1080p</div>
+          </div>
+
+          <div class="casifierPreviewItem">
+            <svg viewBox="0 0 180 278" role="img" aria-label="Ultra HD preview">
+              <defs>
+                <linearGradient id="casifierPosterUltra" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#f7c948" />
+                  <stop offset="0.45" stop-color="#7a3e9d" />
+                  <stop offset="1" stop-color="#0b1026" />
+                </linearGradient>
+              </defs>
+              <rect x="8" y="6" width="164" height="254" rx="2" fill="#111" />
+              <rect x="8" y="6" width="22" height="254" fill="#060606" />
+              <rect x="30" y="6" width="132" height="26" fill="#171717" />
+              <rect x="30" y="32" width="132" height="218" fill="url(#casifierPosterUltra)" />
+              <path d="M96 52 L112 100 L156 101 L121 130 L134 178 L96 150 L58 178 L71 130 L36 101 L80 100 Z" fill="#fff2b8" opacity="0.78" />
+              <rect x="30" y="194" width="132" height="56" fill="#111" opacity="0.5" />
+              <text x="96" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#fff">POSTER</text>
+              <rect x="8" y="6" width="164" height="254" fill="none" stroke="#000" stroke-width="3" />
+              <rect x="13" y="11" width="154" height="244" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5" />
+              <rect x="28" y="6" width="3" height="254" fill="#fff" opacity="0.14" />
+              <rect x="31" y="6" width="5" height="254" fill="#000" opacity="0.35" />
+              <text x="96" y="24" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#f6d451">ULTRA HD</text>
+            </svg>
+            <div class="casifierPreviewLabel">Ultra HD</div>
+            <div class="casifierPreviewMeta">2160p / 4K</div>
+          </div>
+        </div>
+
         <label class="checkboxContainer">
           <input is="emby-checkbox" type="checkbox" id="Enabled" />
           <span>Enable Casifier</span>

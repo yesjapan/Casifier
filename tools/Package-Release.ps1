@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.1.2.0",
+    [string]$Version = "0.1.3.0",
     [string]$Configuration = "Release",
     [string]$Framework = "net9.0",
     [string]$TargetAbi = "10.11.6.0",
@@ -29,7 +29,7 @@ if (Test-Path $zipPath) {
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $metadata = [ordered]@{
     category = "Library"
-    changelog = "Added Jellyfin package metadata to release ZIPs."
+    changelog = "Added case artwork previews to the plugin settings page."
     description = "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans."
     guid = "6de807d7-041d-4592-a278-91f04a37ec0f"
     imageUrl = ""
@@ -50,6 +50,7 @@ $checksum = (Get-FileHash -Algorithm MD5 -LiteralPath $zipPath).Hash.ToLowerInva
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 $plugin = $manifest[0]
 $plugin.versions[0].version = $Version
+$plugin.versions[0].changelog = $metadata.changelog
 $plugin.versions[0].targetAbi = $TargetAbi
 $plugin.versions[0].checksum = $checksum
 $plugin.versions[0].timestamp = $timestamp
