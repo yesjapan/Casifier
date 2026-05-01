@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Casifier Movie Case Thumbnail Samples</title>
+  <desc id="desc">Three sample movie poster thumbnails rendered as DVD, Blu-ray, and Ultra HD cases.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#181818"/>
+      <stop offset="1" stop-color="#2d2d2d"/>
+    </linearGradient>
+
+    <linearGradient id="posterA" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#d95d39"/>
+      <stop offset="0.55" stop-color="#253858"/>
+      <stop offset="1" stop-color="#101820"/>
+    </linearGradient>
+
+    <linearGradient id="posterB" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#79d2c0"/>
+      <stop offset="0.58" stop-color="#42526e"/>
+      <stop offset="1" stop-color="#172b4d"/>
+    </linearGradient>
+
+    <linearGradient id="posterC" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f7c948"/>
+      <stop offset="0.45" stop-color="#7a3e9d"/>
+      <stop offset="1" stop-color="#0b1026"/>
+    </linearGradient>
+
+    <filter id="shadow" x="-25%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+
+    <symbol id="fakePosterA" viewBox="0 0 250 390">
+      <rect width="250" height="390" fill="url(#posterA)"/>
+      <circle cx="178" cy="96" r="54" fill="#ffd166" opacity="0.9"/>
+      <path d="M0 292 L68 210 L112 255 L154 188 L250 310 L250 390 L0 390 Z" fill="#0c1624" opacity="0.82"/>
+      <text x="125" y="326" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#fff">SAMPLE</text>
+      <text x="125" y="356" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#d8d8d8">MOVIE POSTER</text>
+    </symbol>
+
+    <symbol id="fakePosterB" viewBox="0 0 250 390">
+      <rect width="250" height="390" fill="url(#posterB)"/>
+      <rect x="42" y="58" width="166" height="214" rx="82" fill="#d6f6ff" opacity="0.18"/>
+      <path d="M35 285 C78 240 116 250 139 286 C158 316 197 303 220 275 L220 390 L35 390 Z" fill="#102a43" opacity="0.86"/>
+      <text x="125" y="326" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#fff">SAMPLE</text>
+      <text x="125" y="356" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#d8d8d8">MOVIE POSTER</text>
+    </symbol>
+
+    <symbol id="fakePosterC" viewBox="0 0 250 390">
+      <rect width="250" height="390" fill="url(#posterC)"/>
+      <path d="M125 38 L157 129 L242 132 L174 187 L198 274 L125 224 L52 274 L76 187 L8 132 L93 129 Z" fill="#fff2b8" opacity="0.78"/>
+      <rect x="0" y="284" width="250" height="106" fill="#111" opacity="0.5"/>
+      <text x="125" y="326" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#fff">SAMPLE</text>
+      <text x="125" y="356" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#d8d8d8">MOVIE POSTER</text>
+    </symbol>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <text x="640" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#ffffff">Casifier thumbnail samples</text>
+  <text x="640" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#c8c8c8">Fake poster art with the current DVD, Blu-ray, and Ultra HD case treatment</text>
+
+  <g transform="translate(131 160)" filter="url(#shadow)">
+    <rect x="0" y="0" width="312" height="474" fill="#111"/>
+    <rect x="0" y="0" width="38" height="474" fill="#d8d8d8"/>
+    <rect x="38" y="0" width="250" height="46" fill="#f2f2f2"/>
+    <use href="#fakePosterA" x="38" y="46" width="250" height="390"/>
+    <rect x="38" y="46" width="250" height="390" fill="none" stroke="#000" stroke-opacity="0.42" stroke-width="4"/>
+    <rect x="0" y="0" width="312" height="474" fill="none" stroke="#000" stroke-width="3"/>
+    <rect x="6" y="6" width="300" height="462" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2"/>
+    <rect x="34" y="0" width="4" height="474" fill="#fff" opacity="0.16"/>
+    <rect x="38" y="0" width="8" height="474" fill="#000" opacity="0.35"/>
+    <text x="163" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#202020">DVD</text>
+  </g>
+  <text x="287" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#f1f1f1">SD / 720p</text>
+
+  <g transform="translate(484 160)" filter="url(#shadow)">
+    <rect x="0" y="0" width="312" height="474" fill="#111"/>
+    <rect x="0" y="0" width="38" height="474" fill="#0b3477"/>
+    <rect x="38" y="0" width="250" height="46" fill="#1658ba"/>
+    <use href="#fakePosterB" x="38" y="46" width="250" height="390"/>
+    <rect x="38" y="46" width="250" height="390" fill="none" stroke="#000" stroke-opacity="0.42" stroke-width="4"/>
+    <rect x="0" y="0" width="312" height="474" fill="none" stroke="#000" stroke-width="3"/>
+    <rect x="6" y="6" width="300" height="462" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2"/>
+    <rect x="34" y="0" width="4" height="474" fill="#fff" opacity="0.16"/>
+    <rect x="38" y="0" width="8" height="474" fill="#000" opacity="0.35"/>
+    <text x="163" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#fff">BLU-RAY</text>
+  </g>
+  <text x="640" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#f1f1f1">1080p</text>
+
+  <g transform="translate(837 160)" filter="url(#shadow)">
+    <rect x="0" y="0" width="312" height="474" fill="#111"/>
+    <rect x="0" y="0" width="38" height="474" fill="#060606"/>
+    <rect x="38" y="0" width="250" height="46" fill="#171717"/>
+    <use href="#fakePosterC" x="38" y="46" width="250" height="390"/>
+    <rect x="38" y="46" width="250" height="390" fill="none" stroke="#000" stroke-opacity="0.42" stroke-width="4"/>
+    <rect x="0" y="0" width="312" height="474" fill="none" stroke="#000" stroke-width="3"/>
+    <rect x="6" y="6" width="300" height="462" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2"/>
+    <rect x="34" y="0" width="4" height="474" fill="#fff" opacity="0.16"/>
+    <rect x="38" y="0" width="8" height="474" fill="#000" opacity="0.35"/>
+    <text x="163" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#f6d451">ULTRA HD</text>
+  </g>
+  <text x="993" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#f1f1f1">2160p / 4K</text>
+</svg>
