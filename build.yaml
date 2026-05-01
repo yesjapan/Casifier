@@ -1,7 +1,7 @@
 ---
 name: "Casifier"
 guid: "6de807d7-041d-4592-a278-91f04a37ec0f"
-version: "0.1.8.0"
+version: "0.1.9.0"
 targetAbi: "10.11.6.0"
 framework: "net9.0"
 overview: "Generate DVD, Blu-ray, and Ultra HD case posters for Jellyfin movies."
@@ -17,4 +17,4 @@ artifacts:
   - "SixLabors.ImageSharp.dll"
   - "SixLabors.ImageSharp.Drawing.dll"
 changelog: >
-  Updated settings previews to show the format banner overlaying the poster.
+  Use the highest available movie version resolution when choosing the format banner.

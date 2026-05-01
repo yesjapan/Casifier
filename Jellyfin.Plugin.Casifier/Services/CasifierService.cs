@@ -82,13 +82,13 @@ public sealed class CasifierService
             return false;
         }
 
-        var stream = movie.GetDefaultVideoStream();
-        if (stream?.Height is null)
+        var height = GetHighestVideoHeight(movie);
+        if (height is null)
         {
             return false;
         }
 
-        var caseKind = ResolveCaseKind(stream.Height.Value);
+        var caseKind = ResolveCaseKind(height.Value);
         var sourcePath = EnsureBackup(image.Path, config.BackupSuffix);
         await RenderCaseAsync(sourcePath, image.Path, caseKind, cancellationToken).ConfigureAwait(false);
         File.SetLastWriteTimeUtc(image.Path, DateTime.UtcNow);
@@ -123,6 +123,26 @@ public sealed class CasifierService
         }
 
         return CaseKind.Dvd;
+    }
+
+    private static int? GetHighestVideoHeight(Movie movie)
+    {
+        var heights = new List<int>();
+
+        foreach (var source in movie.GetMediaSources(false))
+        {
+            heights.AddRange(source.MediaStreams
+                .Where(stream => stream.Type == MediaStreamType.Video && stream.Height.HasValue)
+                .Select(stream => stream.Height!.Value));
+        }
+
+        var defaultStream = movie.GetDefaultVideoStream();
+        if (defaultStream?.Height is not null)
+        {
+            heights.Add(defaultStream.Height.Value);
+        }
+
+        return heights.Count == 0 ? null : heights.Max();
     }
 
     private static async Task RenderCaseAsync(string sourcePath, string outputPath, CaseKind caseKind, CancellationToken cancellationToken)
