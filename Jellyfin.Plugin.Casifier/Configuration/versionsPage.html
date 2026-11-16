@@ -318,8 +318,16 @@
       let unreachable = 0;
 
       const el = (tag, props, ...children) => {
-        const options = props && props.is ? { is: props.is } : undefined;
-        const node = document.createElement(tag, options);
+        // Customized built-ins (is="emby-button") are created from markup: Jellyfin 12's web-components
+        // polyfill replaces document.createElement and crashes on the standard { is } options object.
+        let node;
+        if (props && props.is) {
+          const holder = document.createElement('div');
+          holder.innerHTML = '<' + tag + ' is="' + props.is + '"></' + tag + '>';
+          node = holder.firstElementChild;
+        } else {
+          node = document.createElement(tag);
+        }
         for (const [key, value] of Object.entries(props || {})) {
           if (value === undefined || value === null || value === false || key === 'is') continue;
           if (key === 'className') node.className = value;
@@ -378,7 +386,7 @@
         const review = lower.filter(hasConcerns);
         const reclaimable = safe.reduce((total, version) => total + (version.SizeBytes || 0), 0);
         const stat = (value, label) => el('div', { className: 'cvStat' }, el('strong', { text: value }), el('span', { text: label }));
-        summary.replaceChildren(
+        summary.replaceChildren(...[
           stat(movies.length, 'movies with versions'),
           stat(lower.length, 'lower versions'),
           stat(safe.length, 'with nothing unique'),
@@ -387,7 +395,7 @@
           unreachable
             ? el('div', { className: 'cvNote', text: ('' + (unreachable) + " " + (unreachable === 1 ? 'copy was' : 'copies were') + " skipped because the file couldn't be reached (offline drive or already deleted). Connect the drive and refresh to include " + (unreachable === 1 ? 'it' : 'them') + ".") })
             : null
-        );
+        ].filter(Boolean));
       };
 
       const chips = languages => languages.length
@@ -473,7 +481,7 @@
           });
           const freed = formatBytes(result && result.FreedBytes);
           showMessage(('' + ((result && result.Message) || 'Version deleted.') + (freed ? (" Freed " + (freed) + ".") : '') + " Jellyfin will drop it from the library shortly."));
-          await load(false);
+          await load(true);
         } catch (error) {
           showMessage(await readError(error), true);
           button.disabled = false;
@@ -578,9 +586,9 @@
       };
 
       let loading = null;
-      const load = () => {
+      const load = keepMessage => {
         if (loading) return loading;
-        showMessage('');
+        if (keepMessage !== true) showMessage('');
         summary.replaceChildren(el('div', { className: 'cvStat', text: 'Scanning your movie libraries…' }));
         list.replaceChildren();
         Dashboard.showLoadingMsg();
@@ -591,6 +599,7 @@
             unreachable = (report && report.UnreachableVersions) || 0;
             render();
           } catch (error) {
+            console.error('Casifier: could not load movie versions', error);
             summary.replaceChildren();
             showMessage(("Could not load movie versions: " + (await readError(error))), true);
           } finally {
@@ -603,7 +612,7 @@
 
       search.addEventListener('input', render);
       filter.addEventListener('change', render);
-      page.querySelector('#cvRefresh').addEventListener('click', load);
+      page.querySelector('#cvRefresh').addEventListener('click', () => load());
 
       // Load straight away, and again whenever Jellyfin shows this page from its cache.
       let shown = false;
