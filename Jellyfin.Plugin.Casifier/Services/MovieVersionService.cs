@@ -199,7 +199,7 @@ public sealed class MovieVersionService
             MediaTypes = [MediaType.Video],
             SourceTypes = [SourceType.Library]
         }).OfType<Movie>()
-            .Where(movie => string.IsNullOrEmpty(movie.PrimaryVersionId))
+            .Where(movie => !movie.PrimaryVersionId.HasValue)
             .GroupBy(movie => movie.Id)
             .Select(group => group.First())
             .ToList();
@@ -209,7 +209,8 @@ public sealed class MovieVersionService
             movie.GetProviderId(MetadataProvider.Imdb),
             [movie.Name, movie.OriginalTitle],
             movie.ProductionYear,
-            movie.LocalAlternateVersions.Length > 0 || movie.LinkedAlternateVersions.Length > 0)).ToList();
+            // Jellyfin 12 tracks alternate versions in the library manager; MediaSourceCount covers both kinds.
+            movie.MediaSourceCount > 1)).ToList();
 
         return MovieMatcher.Cluster(candidates)
             .Select(cluster => new MovieCluster(cluster.Members.Select(i => movies[i]).ToList(), cluster))
@@ -446,7 +447,8 @@ public sealed class MovieVersionService
                 {
                     resolved = new LanguageRef(
                         (culture.ThreeLetterISOLanguageName ?? code).ToLowerInvariant(),
-                        string.IsNullOrWhiteSpace(culture.DisplayName) ? code : culture.DisplayName);
+                        // ISO 639 names can list variants ("Spanish; Castilian"); the first is the common one.
+                        string.IsNullOrWhiteSpace(culture.DisplayName) ? code : culture.DisplayName.Split(';')[0].Trim());
                 }
             }
             catch (Exception ex)

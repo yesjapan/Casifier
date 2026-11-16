@@ -9,12 +9,12 @@
     "imageUrl":  "https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/casifier.png",
     "versions":  [
                      {
-                         "version":  "0.1.14.0",
-                         "changelog":  "Add a plugin image for the catalog and plugin page.",
-                         "targetAbi":  "10.11.6.0",
-                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.14.0/Casifier_0.1.14.0.zip",
-                         "checksum":  "e79e27638a195131d009f8092111ce9d",
-                         "timestamp":  "2026-11-16T06:24:46Z"
+                         "version":  "0.1.15.0",
+                         "changelog":  "Rebuild for Jellyfin 12 (.NET 10). Fixes the Movie Versions page error \u0027Method not found: PrimaryVersionId\u0027 on Jellyfin 12 servers. Requires Jellyfin 12.0 or newer.",
+                         "targetAbi":  "12.0.0.0",
+                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.15.0/Casifier_0.1.15.0.zip",
+                         "checksum":  "3629fadc0f8c92cde47d7dbeb0787feb",
+                         "timestamp":  "2026-11-16T06:51:52Z"
                      }
                  ]
 }

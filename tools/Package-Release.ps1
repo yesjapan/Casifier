@@ -1,8 +1,8 @@
 param(
-    [string]$Version = "0.1.14.0",
+    [string]$Version = "0.1.15.0",
     [string]$Configuration = "Release",
-    [string]$Framework = "net9.0",
-    [string]$TargetAbi = "10.11.6.0",
+    [string]$Framework = "net10.0",
+    [string]$TargetAbi = "12.0.0.0",
     [string]$SourceUrl = "",
     [string]$ImageUrl = "https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/casifier.png"
 )
@@ -17,7 +17,15 @@ $manifestPath = Join-Path $root "repository\manifest.json"
 $metaPath = Join-Path $distDir "meta.json"
 
 $env:DOTNET_CLI_HOME = $root
-dotnet publish (Join-Path $root "Casifier.sln") -c $Configuration
+# Jellyfin 12 plugins need the .NET 10 SDK; prefer the project-local copy in .dotnet if it's there.
+$dotnet = Join-Path $root ".dotnet\dotnet.exe"
+if (Test-Path $dotnet) {
+    $env:DOTNET_ROOT = Join-Path $root ".dotnet"
+} else {
+    $dotnet = "dotnet"
+}
+
+& $dotnet publish (Join-Path $root "Casifier.sln") -c $Configuration
 if ($LASTEXITCODE -ne 0) {
     throw "dotnet publish failed with exit code $LASTEXITCODE"
 }
@@ -30,7 +38,7 @@ if (Test-Path $zipPath) {
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $metadata = [ordered]@{
     category = "Library"
-    changelog = "Add a plugin image for the catalog and plugin page."
+    changelog = "Rebuild for Jellyfin 12 (.NET 10). Fixes the Movie Versions page error 'Method not found: PrimaryVersionId' on Jellyfin 12 servers. Requires Jellyfin 12.0 or newer."
     description = "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans."
     guid = "6de807d7-041d-4592-a278-91f04a37ec0f"
     imageUrl = $ImageUrl

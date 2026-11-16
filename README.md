@@ -1,6 +1,6 @@
 # Casifier
 
-Casifier is a Jellyfin 10.11.6-compatible plugin that renders movie primary posters into media-case artwork based on the movie resolution:
+Casifier is a Jellyfin 12 plugin that renders movie primary posters into media-case artwork based on the movie resolution:
 
 - DVD for SD/720p movies
 - Blu-ray for 1080p movies
@@ -44,13 +44,13 @@ $env:DOTNET_CLI_HOME = (Get-Location).Path
 dotnet publish .\Casifier.sln -c Release
 ```
 
-Copy the publish output from `Jellyfin.Plugin.Casifier\bin\Release\net9.0\publish` into a Jellyfin plugin folder, then restart Jellyfin.
+Copy the publish output from `Jellyfin.Plugin.Casifier\bin\Release\net10.0\publish` into a Jellyfin plugin folder, then restart Jellyfin.
 
 ## Repository Install Flow
 
 Jellyfin can install third-party plugins from a repository manifest URL:
 
-1. Publish a release ZIP containing the files from `Jellyfin.Plugin.Casifier\bin\Release\net9.0\publish`.
+1. Publish a release ZIP containing the files from `Jellyfin.Plugin.Casifier\bin\Release\net10.0\publish`.
 2. Replace the placeholder `sourceUrl` and `checksum` in `repository/manifest.json`.
 3. Host `repository/manifest.json`, for example through GitHub Pages or a raw GitHub URL.
 4. In Jellyfin, go to Dashboard -> Plugins -> Repositories -> Add, then paste the manifest URL.
@@ -62,8 +62,8 @@ You can package a release and update the manifest checksum with:
 
 ```powershell
 .\tools\Package-Release.ps1 `
-  -Version 0.1.14.0 `
-  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.14.0/Casifier_0.1.14.0.zip"
+  -Version 0.1.15.0 `
+  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.15.0/Casifier_0.1.15.0.zip"
 ```
 
 Use this repository URL in Jellyfin. It always lists the latest release, so new versions show up as updates:
@@ -89,13 +89,13 @@ Then create the public GitHub repo, push this project, and publish the first rel
 ```powershell
 gh repo create yesjapan/Casifier --public --source . --push
 
-gh release create v0.1.14.0 `
-  .\dist\Casifier_0.1.14.0.zip `
+gh release create v0.1.15.0 `
+  .\dist\Casifier_0.1.15.0.zip `
   --repo yesjapan/Casifier `
-  --title "Casifier 0.1.14.0" `
+  --title "Casifier 0.1.15.0" `
   --notes "Add a Movie Versions page for finding and removing duplicate copies of movies."
 ```
 
 ## Notes
 
-This version targets Jellyfin 10.11.6 packages.
+This version targets Jellyfin 12.0 packages and .NET 10. Releases up to 0.1.14.0 targeted Jellyfin 10.11.6. Building needs the .NET 10 SDK; `tools\Package-Release.ps1` uses a project-local copy in `.dotnet\` if present.
