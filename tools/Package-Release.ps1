@@ -1,9 +1,10 @@
 param(
-    [string]$Version = "0.1.13.0",
+    [string]$Version = "0.1.14.0",
     [string]$Configuration = "Release",
     [string]$Framework = "net9.0",
     [string]$TargetAbi = "10.11.6.0",
-    [string]$SourceUrl = ""
+    [string]$SourceUrl = "",
+    [string]$ImageUrl = "https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/casifier.png"
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,10 +30,10 @@ if (Test-Path $zipPath) {
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $metadata = [ordered]@{
     category = "Library"
-    changelog = "Fix the Movie Versions page script being broken by Jellyfin's page translation, which left the page empty."
+    changelog = "Add a plugin image for the catalog and plugin page."
     description = "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans."
     guid = "6de807d7-041d-4592-a278-91f04a37ec0f"
-    imageUrl = ""
+    imageUrl = $ImageUrl
     name = "Casifier"
     overview = "Generate media-case posters for Jellyfin movies."
     owner = "Casifier"
@@ -49,6 +50,7 @@ $checksum = (Get-FileHash -Algorithm MD5 -LiteralPath $zipPath).Hash.ToLowerInva
 
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 $plugin = $manifest[0]
+$plugin.imageUrl = $ImageUrl
 $plugin.versions[0].version = $Version
 $plugin.versions[0].changelog = $metadata.changelog
 $plugin.versions[0].targetAbi = $TargetAbi

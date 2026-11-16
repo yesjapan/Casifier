@@ -1,0 +1,77 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#0d0f14}svg{display:block}</style></head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <radialGradient id="bg" cx="0.32" cy="0.45" r="0.9">
+      <stop offset="0" stop-color="#232a3a"/>
+      <stop offset="0.55" stop-color="#141821"/>
+      <stop offset="1" stop-color="#0b0d12"/>
+    </radialGradient>
+    <linearGradient id="artDvd" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#d95d39"/><stop offset="0.58" stop-color="#253858"/><stop offset="1" stop-color="#101820"/>
+    </linearGradient>
+    <linearGradient id="artBd" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#79d2c0"/><stop offset="0.58" stop-color="#42526e"/><stop offset="1" stop-color="#172b4d"/>
+    </linearGradient>
+    <linearGradient id="artUhd" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f7c948"/><stop offset="0.45" stop-color="#7a3e9d"/><stop offset="1" stop-color="#0b1026"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="22" stdDeviation="20" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+    <clipPath id="poster"><rect width="220" height="330"/></clipPath>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bg)"/>
+
+  <!-- DVD (back left) -->
+  <g transform="translate(118 222) rotate(-11 110 165)" filter="url(#shadow)">
+    <g clip-path="url(#poster)">
+      <rect width="220" height="330" fill="url(#artDvd)"/>
+      <circle cx="150" cy="125" r="36" fill="#ffd166" opacity="0.9"/>
+      <path d="M0 262 L52 196 L86 230 L118 178 L220 282 L220 330 L0 330 Z" fill="#0c1624" opacity="0.85"/>
+      <rect width="220" height="44" fill="#f2f2f2"/>
+      <rect y="44" width="220" height="7" fill="#000" opacity="0.3"/>
+    </g>
+    <text x="110" y="31" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#202020">DVD</text>
+    <rect width="220" height="330" fill="none" stroke="#000" stroke-width="4"/>
+    <rect x="7" y="7" width="206" height="316" fill="none" stroke="#fff" stroke-opacity="0.3" stroke-width="2"/>
+  </g>
+
+  <!-- Ultra HD (back right) -->
+  <g transform="translate(422 222) rotate(11 110 165)" filter="url(#shadow)">
+    <g clip-path="url(#poster)">
+      <rect width="220" height="330" fill="url(#artUhd)"/>
+      <path d="M110 78 L130 140 L194 141 L143 179 L161 241 L110 204 L59 241 L77 179 L26 141 L90 140 Z" fill="#fff2b8" opacity="0.8"/>
+      <rect y="262" width="220" height="68" fill="#111" opacity="0.45"/>
+      <rect width="220" height="44" fill="#171717"/>
+      <rect y="44" width="220" height="7" fill="#000" opacity="0.3"/>
+    </g>
+    <text x="110" y="31" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#f6d451">ULTRA HD</text>
+    <rect width="220" height="330" fill="none" stroke="#000" stroke-width="4"/>
+    <rect x="7" y="7" width="206" height="316" fill="none" stroke="#fff" stroke-opacity="0.3" stroke-width="2"/>
+  </g>
+
+  <!-- Blu-ray (front centre) -->
+  <g transform="translate(270 178)" filter="url(#shadow)">
+    <g clip-path="url(#poster)">
+      <rect width="220" height="330" fill="url(#artBd)"/>
+      <ellipse cx="118" cy="140" rx="62" ry="76" fill="#d6f6ff" opacity="0.2"/>
+      <path d="M0 268 C34 226 70 234 92 266 C110 296 150 282 220 252 L220 330 L0 330 Z" fill="#102a43" opacity="0.88"/>
+      <rect width="220" height="44" fill="#1658ba"/>
+      <rect y="44" width="220" height="7" fill="#000" opacity="0.3"/>
+    </g>
+    <text x="110" y="31" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#fff">BLU-RAY</text>
+    <rect width="220" height="330" fill="none" stroke="#000" stroke-width="4"/>
+    <rect x="7" y="7" width="206" height="316" fill="none" stroke="#fff" stroke-opacity="0.3" stroke-width="2"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="742" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="128" font-weight="700" fill="#f4f5f7" letter-spacing="-2">Casifier</text>
+  <rect x="748" y="404" width="96" height="8" rx="4" fill="#1658ba"/>
+  <rect x="852" y="404" width="40" height="8" rx="4" fill="#f6d451"/>
+  <rect x="900" y="404" width="20" height="8" rx="4" fill="#f2f2f2"/>
+  <text x="748" y="462" font-family="Segoe UI, Arial, sans-serif" font-size="34" fill="#aab3c2">DVD · Blu-ray · Ultra HD</text>
+</svg>
+</body></html>
