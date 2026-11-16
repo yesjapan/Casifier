@@ -24,7 +24,11 @@ Dashboard -> Plugins -> **Movie Versions** (also linked from the Casifier settin
 
 Copies on drives that are offline are skipped and counted at the top of the page.
 
-For each movie, versions are ranked by resolution (cropped encodes such as 1920x800 count as 1080p), then HDR, bitrate and size. The highest one is always kept. For every version the page shows:
+Copies of one film run about the same length, so a copy whose runtime is far off (less than about two thirds of the others, like a 24-minute anime episode identified as a 2-hour film with the same name) is left out of the group. It is listed at the bottom of the page so you can fix its identification in Jellyfin (Identify, or Split if Jellyfin grouped it as a version). It is never offered for deletion.
+
+For each movie, versions are ranked by resolution (cropped encodes such as 1920x800 count as 1080p), then HDR. Between copies of the same quality, the one holding the most wins: languages and commentaries no other copy has, then the number of audio and subtitle languages, and only then bitrate and size. The highest one is always kept.
+
+The page is a compact numbered list: one line per movie plus one line per copy (badge, resolution, codec, size, runtime, languages with unique ones highlighted, file path, and a verdict: keep, nothing unique, has unique, check first). Expand a movie (or **Expand all**) for the full comparison and the Delete buttons. For every version the full view shows:
 
 - The DVD / Blu-ray / Ultra HD badge, codec, HDR format, size, runtime and container
 - Audio and subtitle languages, with anything **no other version has** highlighted (an extra Japanese dub or Korean subtitles on the DVD, a commentary track)
@@ -62,8 +66,8 @@ You can package a release and update the manifest checksum with:
 
 ```powershell
 .\tools\Package-Release.ps1 `
-  -Version 0.1.16.0 `
-  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.16.0/Casifier_0.1.16.0.zip"
+  -Version 0.1.17.0 `
+  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.17.0/Casifier_0.1.17.0.zip"
 ```
 
 Use this repository URL in Jellyfin. It always lists the latest release, so new versions show up as updates:
@@ -89,10 +93,10 @@ Then create the public GitHub repo, push this project, and publish the first rel
 ```powershell
 gh repo create yesjapan/Casifier --public --source . --push
 
-gh release create v0.1.16.0 `
-  .\dist\Casifier_0.1.16.0.zip `
+gh release create v0.1.17.0 `
+  .\dist\Casifier_0.1.17.0.zip `
   --repo yesjapan/Casifier `
-  --title "Casifier 0.1.16.0" `
+  --title "Casifier 0.1.17.0" `
   --notes "Add a Movie Versions page for finding and removing duplicate copies of movies."
 ```
 

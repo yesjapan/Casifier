@@ -261,6 +261,238 @@
           font-size: 0.88em;
         }
 
+        /* Compact numbered list: one header line plus one line per copy; expand for the full cards. */
+        #CasifierVersionsPage .cvListTools {
+          display: flex;
+          gap: 1em;
+          margin: 0 0 0.6em;
+          font-size: 0.9em;
+        }
+
+        #CasifierVersionsPage .cvLinkButton {
+          padding: 0;
+          border: 0;
+          background: none;
+          color: var(--theme-primary-color, #00a4dc);
+          font: inherit;
+          cursor: pointer;
+        }
+
+        #CasifierVersionsPage .cvEntry {
+          border-bottom: 1px solid rgba(128, 128, 128, 0.22);
+          font-size: 1em;
+        }
+
+        #CasifierVersionsPage .cvEntry[open] {
+          margin: 0.4em 0 0.8em;
+          border: 1px solid rgba(128, 128, 128, 0.32);
+          border-radius: 0.4em;
+        }
+
+        #CasifierVersionsPage .cvEntry > summary {
+          display: block;
+          padding: 0.45em 0.6em;
+          color: inherit;
+          list-style: none;
+        }
+
+        #CasifierVersionsPage .cvEntry > summary::-webkit-details-marker {
+          display: none;
+        }
+
+        #CasifierVersionsPage .cvEntry > summary:hover {
+          background: rgba(128, 128, 128, 0.08);
+        }
+
+        #CasifierVersionsPage .cvEntryHead {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: baseline;
+          gap: 0.2em 0.7em;
+        }
+
+        #CasifierVersionsPage .cvCaret {
+          display: inline-block;
+          width: 0.9em;
+          color: var(--secondaryTextColor, inherit);
+        }
+
+        #CasifierVersionsPage .cvCaret::before {
+          content: "+";
+        }
+
+        #CasifierVersionsPage .cvEntry[open] .cvCaret::before {
+          content: "\2212";
+        }
+
+        #CasifierVersionsPage .cvNum {
+          min-width: 2.6em;
+          color: var(--secondaryTextColor, inherit);
+          font-variant-numeric: tabular-nums;
+        }
+
+        #CasifierVersionsPage .cvEntryTitle {
+          color: inherit;
+          font-weight: 600;
+          text-decoration: none;
+        }
+
+        #CasifierVersionsPage .cvEntryTitle:hover {
+          text-decoration: underline;
+        }
+
+        #CasifierVersionsPage .cvEntryMeta {
+          color: var(--secondaryTextColor, inherit);
+          font-size: 0.85em;
+        }
+
+        #CasifierVersionsPage .cvPill {
+          padding: 0.05em 0.55em;
+          border-radius: 1em;
+          font-size: 0.78em;
+          white-space: nowrap;
+        }
+
+        #CasifierVersionsPage .cvPill.safe { background: rgba(128, 128, 128, 0.22); }
+        #CasifierVersionsPage .cvPill.unique { background: rgba(240, 165, 0, 0.22); }
+        #CasifierVersionsPage .cvPill.warn { background: rgba(224, 85, 85, 0.25); }
+
+        #CasifierVersionsPage .cvLine {
+          display: grid;
+          grid-template-columns: 5.6em minmax(13em, 17em) minmax(0, 1fr) minmax(0, 1.5fr) 7.5em;
+          gap: 0.8em;
+          align-items: center;
+          margin-top: 0.25em;
+          padding-left: 3.6em;
+          font-size: 0.85em;
+        }
+
+        #CasifierVersionsPage .cvLine .cvBadge {
+          justify-self: start;
+          padding: 0.1em 0.45em;
+          font-size: 0.8em;
+        }
+
+        #CasifierVersionsPage .cvLineSpecs {
+          color: var(--secondaryTextColor, inherit);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        #CasifierVersionsPage .cvLineLangs {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        #CasifierVersionsPage .cvLangLabel {
+          color: var(--secondaryTextColor, inherit);
+          margin-right: 0.3em;
+        }
+
+        #CasifierVersionsPage .cvLineLangs b {
+          color: #f0b429;
+        }
+
+        #CasifierVersionsPage .cvLinePath {
+          display: flex;
+          min-width: 0;
+          font-family: Consolas, Menlo, monospace;
+          font-size: 0.92em;
+          white-space: nowrap;
+        }
+
+        /* The folder gives up its space long before the file name does. */
+        #CasifierVersionsPage .cvLinePath .cvDir {
+          flex: 0 1000 auto;
+          min-width: 1.5em;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          opacity: 0.55;
+        }
+
+        #CasifierVersionsPage .cvLinePath .cvFile {
+          flex: 0 1 auto;
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        #CasifierVersionsPage .cvLineState {
+          justify-self: end;
+          font-size: 0.9em;
+          white-space: nowrap;
+        }
+
+        #CasifierVersionsPage .cvLineState.best { color: #6fcf68; }
+        #CasifierVersionsPage .cvLineState.unique { color: #f0b429; }
+        #CasifierVersionsPage .cvLineState.check { color: #f0b429; }
+        #CasifierVersionsPage .cvLineState.safe,
+        #CasifierVersionsPage .cvLineState.blocked { color: var(--secondaryTextColor, inherit); }
+
+        #CasifierVersionsPage .cvEntryBody {
+          padding: 0.6em 0.8em 0.9em;
+          border-top: 1px solid rgba(128, 128, 128, 0.22);
+        }
+
+        #CasifierVersionsPage .cvEntryBody .cvMatchWarn {
+          margin: 0 0 0.8em;
+        }
+
+        #CasifierVersionsPage .cvMismatches {
+          margin: 2em 0 0;
+          padding: 0.6em 0.8em;
+          border: 1px solid rgba(240, 165, 0, 0.45);
+          border-radius: 0.4em;
+          font-size: 1em;
+        }
+
+        #CasifierVersionsPage .cvMismatches > summary {
+          color: inherit;
+        }
+
+        #CasifierVersionsPage .cvMismatches .cvNote {
+          margin: 0.6em 0;
+        }
+
+        #CasifierVersionsPage .cvMismatch {
+          grid-template-columns: 2.6em 9em minmax(0, 1fr) minmax(0, 1.5fr);
+          padding-left: 0;
+        }
+
+        #CasifierVersionsPage .cvMismatch a {
+          color: inherit;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        @media (max-width: 60em) {
+          #CasifierVersionsPage .cvLine {
+            grid-template-columns: 5.6em minmax(0, 1fr) auto;
+            gap: 0.15em 0.6em;
+            padding-left: 0.4em;
+          }
+
+          #CasifierVersionsPage .cvLine .cvLineLangs,
+          #CasifierVersionsPage .cvLine .cvLinePath {
+            grid-column: 2 / -1;
+          }
+
+          #CasifierVersionsPage .cvMismatch {
+            grid-template-columns: 2.6em minmax(0, 1fr);
+          }
+
+          #CasifierVersionsPage .cvMismatch > * {
+            grid-column: 2;
+          }
+
+          #CasifierVersionsPage .cvMismatch > .cvNum {
+            grid-column: 1;
+          }
+        }
+
         #CasifierVersionsPage .cvEmpty {
           padding: 2em 0;
           color: var(--secondaryTextColor, inherit);
@@ -297,7 +529,12 @@
 
       <div class="cvMessage" id="cvMessage" hidden></div>
       <div class="cvSummary" id="cvSummary"></div>
+      <div class="cvListTools" id="cvListTools" hidden>
+        <button type="button" class="cvLinkButton" id="cvExpandAll">Expand all</button>
+        <button type="button" class="cvLinkButton" id="cvCollapseAll">Collapse all</button>
+      </div>
       <div id="cvList"></div>
+      <div id="cvMismatchList"></div>
     </div>
   </div>
 
@@ -314,8 +551,13 @@
       const message = page.querySelector('#cvMessage');
       const search = page.querySelector('#cvSearch');
       const filter = page.querySelector('#cvFilter');
+      const listTools = page.querySelector('#cvListTools');
+      const mismatchList = page.querySelector('#cvMismatchList');
       let movies = [];
+      let mismatches = [];
       let unreachable = 0;
+      // Which entries are expanded, so a reload after a delete keeps them open.
+      const openIds = new Set();
 
       const el = (tag, props, ...children) => {
         // Customized built-ins (is="emby-button") are created from markup: Jellyfin 12's web-components
@@ -335,7 +577,7 @@
           else if (key.startsWith('on')) node.addEventListener(key.slice(2), value);
           else node.setAttribute(key, value === true ? '' : value);
         }
-        for (const child of children.flat()) {
+        for (const child of children.flat(Infinity)) {
           if (child === null || child === undefined || child === false) continue;
           node.append(child instanceof Node ? child : document.createTextNode(String(child)));
         }
@@ -392,6 +634,7 @@
           stat(safe.length, 'with nothing unique'),
           stat(review.length, 'with unique features'),
           stat(formatBytes(reclaimable) || '0 GB', 'in versions with nothing unique'),
+          mismatches.length ? stat(mismatches.length, 'left out (runtime mismatch)') : null,
           unreachable
             ? el('div', { className: 'cvNote', text: ('' + (unreachable) + " " + (unreachable === 1 ? 'copy was' : 'copies were') + " skipped because the file couldn't be reached (offline drive or already deleted). Connect the drive and refresh to include " + (unreachable === 1 ? 'it' : 'them') + ".") })
             : null
@@ -489,15 +732,17 @@
         }
       };
 
+      const specsOf = version => [
+        version.Resolution,
+        version.VideoCodec,
+        version.VideoRange && version.VideoRange !== 'SDR' ? version.VideoRange : null,
+        formatBytes(version.SizeBytes),
+        formatRuntime(version.RuntimeTicks),
+        version.Container
+      ].filter(Boolean).join(' · ');
+
       const renderVersion = (movie, version) => {
-        const specs = [
-          version.Resolution,
-          version.VideoCodec,
-          version.VideoRange && version.VideoRange !== 'SDR' ? version.VideoRange : null,
-          formatBytes(version.SizeBytes),
-          formatRuntime(version.RuntimeTicks),
-          version.Container
-        ].filter(Boolean).join(' · ');
+        const specs = specsOf(version);
 
         const classes = ['cvVersion'];
         if (version.IsBest) classes.push('isBest');
@@ -534,31 +779,120 @@
           action ? el('div', { className: 'cvActions' }, action) : null);
       };
 
-      const renderMovie = movie => {
-        const poster = movie.HasPrimaryImage
-          ? el('img', {
-              className: 'cvPoster',
-              alt: '',
-              loading: 'lazy',
-              src: ApiClient.getImageUrl(movie.MovieId, { type: 'Primary', maxHeight: 180, quality: 90 })
-            })
-          : el('div', { className: 'cvPoster' });
+      const splitPath = path => {
+        const cut = Math.max(path.lastIndexOf('\\'), path.lastIndexOf('/'));
+        return cut < 0 ? ['', path] : [path.slice(0, cut + 1), path.slice(cut + 1)];
+      };
 
-        return el('section', { className: 'cvMovie' },
-          el('div', { className: 'cvMovieHeader' },
-            poster,
-            el('div', null,
-              el('h3', { className: 'cvMovieTitle' },
-                el('a', { href: ("#/details?id=" + (movie.MovieId)), text: movie.Name })),
-              el('div', { className: 'cvMovieMeta', text: [
-                movie.Year,
-                ('' + (movie.Versions.length) + " versions"),
-                movie.MatchedBy.length ? ("matched by " + (movie.MatchedBy.join(', '))) : null
-              ].filter(Boolean).join(' · ') }),
-              movie.TitleMatchOnly
-                ? el('div', { className: 'cvMatchWarn', text: 'Matched by title and year only. Check these are the same film before deleting.' })
-                : null)),
-          el('div', { className: 'cvVersions' }, movie.Versions.map(version => renderVersion(movie, version))));
+      const renderPath = path => {
+        const parts = splitPath(path || '');
+        return el('span', { className: 'cvLinePath', title: path },
+          parts[0] ? el('span', { className: 'cvDir', text: parts[0] }) : null,
+          el('span', { className: 'cvFile', text: parts[1] }));
+      };
+
+      const languageList = (label, languages) => languages.length
+        ? [
+            el('span', { className: 'cvLangLabel', text: label }),
+            languages.map((language, i) => [i ? ', ' : null, language.IsUnique ? el('b', { text: language.Name }) : language.Name]),
+            ' '
+          ]
+        : null;
+
+      const lineState = version => {
+        if (version.IsBest) return ['best', 'Keep (best)'];
+        if (!version.CanDelete) return ['blocked', "Can't delete"];
+        if (version.UniqueFeatures.length) return ['unique', 'Has unique'];
+        if (version.Cautions.length) return ['check', 'Check first'];
+        return ['safe', 'Nothing unique'];
+      };
+
+      // One compact line per copy: format, specs, languages (unique ones highlighted), path, verdict.
+      const renderLine = version => {
+        const state = lineState(version);
+        const langTitle = [
+          version.AudioLanguages.length ? 'Audio: ' + version.AudioLanguages.map(l => l.Name).join(', ') : 'Audio: none tagged',
+          version.SubtitleLanguages.length ? 'Subtitles: ' + version.SubtitleLanguages.map(l => l.Name).join(', ') : 'Subtitles: none'
+        ].join('\n');
+        return el('div', { className: 'cvLine' },
+          el('span', { className: 'cvBadge ' + version.CaseKey, text: version.CaseLabel }),
+          el('span', { className: 'cvLineSpecs', title: specsOf(version), text: specsOf(version) }),
+          el('span', { className: 'cvLineLangs', title: langTitle },
+            languageList('Audio', version.AudioLanguages),
+            languageList('Subs', version.SubtitleLanguages),
+            version.AudioLanguages.length || version.SubtitleLanguages.length ? null : el('span', { className: 'cvLangLabel', text: 'No language tags' })),
+          renderPath(version.Path),
+          el('span', { className: 'cvLineState ' + state[0], text: state[1] }));
+      };
+
+      const renderEntryBody = movie => el('div', { className: 'cvEntryBody' },
+        movie.TitleMatchOnly
+          ? el('div', { className: 'cvMatchWarn', text: 'Matched by title and year only. Check these are the same film before deleting.' })
+          : null,
+        el('div', { className: 'cvVersions' }, movie.Versions.map(version => renderVersion(movie, version))));
+
+      const renderEntry = movie => {
+        const lower = movie.Versions.filter(isLower);
+        const safeCount = lower.filter(isSafeLower).length;
+        const uniqueCount = lower.filter(version => version.UniqueFeatures.length > 0).length;
+        const title = el('a', {
+          className: 'cvEntryTitle',
+          href: '#/details?id=' + movie.MovieId,
+          text: movie.Name + (movie.Year ? ' (' + movie.Year + ')' : '')
+        });
+        // A click on the title opens the movie; don't also toggle the entry.
+        title.addEventListener('click', event => event.stopPropagation());
+
+        const entry = el('details', { className: 'cvEntry', open: openIds.has(movie.MovieId) },
+          el('summary', null,
+            el('div', { className: 'cvEntryHead' },
+              el('span', { className: 'cvNum' }, el('span', { className: 'cvCaret' }), ' ' + movie.Number + '.'),
+              title,
+              el('span', { className: 'cvEntryMeta', text: movie.Versions.length + ' copies' + (movie.MatchedBy.length ? ' · ' + movie.MatchedBy.join(', ') : '') }),
+              movie.TitleMatchOnly ? el('span', { className: 'cvPill warn', text: 'Title match only' }) : null,
+              safeCount ? el('span', { className: 'cvPill safe', text: safeCount + ' with nothing unique' }) : null,
+              uniqueCount ? el('span', { className: 'cvPill unique', text: uniqueCount + ' with unique features' }) : null),
+            movie.Versions.map(renderLine)));
+
+        // The full cards (with Delete) are only built when an entry is first opened.
+        const ensureBody = () => {
+          if (!entry.querySelector('.cvEntryBody')) entry.append(renderEntryBody(movie));
+        };
+        if (entry.open) ensureBody();
+        entry.addEventListener('toggle', () => {
+          if (entry.open) {
+            openIds.add(movie.MovieId);
+            ensureBody();
+          } else {
+            openIds.delete(movie.MovieId);
+          }
+        });
+        return entry;
+      };
+
+      const renderMismatches = () => {
+        if (!mismatches.length) {
+          mismatchList.replaceChildren();
+          return;
+        }
+
+        const count = mismatches.length;
+        mismatchList.replaceChildren(el('details', { className: 'cvMismatches' },
+          el('summary', null, el('strong', {
+            text: count + (count === 1 ? ' file was' : ' files were') + " left out because the runtime doesn't match the film it was matched to"
+          })),
+          el('p', { className: 'cvNote', text:
+            'These are usually misidentified in Jellyfin, for example a TV or anime episode identified as a film with the same name. ' +
+            'Open the item and use Identify to fix it. If Jellyfin grouped it with the film as another version, use Split on that movie. ' +
+            'Casifier does not offer these for deletion.' }),
+          mismatches.map((mismatch, i) => el('div', { className: 'cvLine cvMismatch' },
+            el('span', { className: 'cvNum', text: (i + 1) + '.' }),
+            el('span', { className: 'cvLineSpecs', text: (formatRuntime(mismatch.RuntimeTicks) || '?') + ' vs ' + (formatRuntime(mismatch.ExpectedRuntimeTicks) || '?') }),
+            el('a', {
+              href: '#/details?id=' + mismatch.MovieId,
+              text: 'Matched to ' + mismatch.MatchedTo + (mismatch.MatchedToYear ? ' (' + mismatch.MatchedToYear + ')' : '')
+            }),
+            renderPath(mismatch.Path)))));
       };
 
       const render = () => {
@@ -573,6 +907,8 @@
           return true;
         });
 
+        renderMismatches();
+        listTools.hidden = !visible.length;
         if (!movies.length) {
           list.replaceChildren(el('div', { className: 'cvEmpty' },
             'No movies with more than one copy found. Copies are matched by TMDb/IMDb ID or by title and year, ',
@@ -581,8 +917,14 @@
         }
 
         list.replaceChildren(...(visible.length
-          ? visible.map(renderMovie)
+          ? visible.map(renderEntry)
           : [el('div', { className: 'cvEmpty', text: 'No movies match this filter.' })]));
+      };
+
+      const setAllOpen = open => {
+        list.querySelectorAll('details.cvEntry').forEach(entry => {
+          entry.open = open;
+        });
       };
 
       let loading = null;
@@ -596,6 +938,11 @@
           try {
             const report = await ApiClient.getJSON(ApiClient.getUrl('Casifier/Versions'));
             movies = (report && report.Movies) || [];
+            // Numbers follow the full list, so a movie keeps its number while you search or filter.
+            movies.forEach((movie, i) => {
+              movie.Number = i + 1;
+            });
+            mismatches = (report && report.RuntimeMismatches) || [];
             unreachable = (report && report.UnreachableVersions) || 0;
             render();
           } catch (error) {
@@ -613,6 +960,8 @@
       search.addEventListener('input', render);
       filter.addEventListener('change', render);
       page.querySelector('#cvRefresh').addEventListener('click', () => load());
+      page.querySelector('#cvExpandAll').addEventListener('click', () => setAllOpen(true));
+      page.querySelector('#cvCollapseAll').addEventListener('click', () => setAllOpen(false));
 
       // Load straight away, and again whenever Jellyfin shows this page from its cache.
       let shown = false;

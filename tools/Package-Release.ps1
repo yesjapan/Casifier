@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.1.16.0",
+    [string]$Version = "0.1.17.0",
     [string]$Configuration = "Release",
     [string]$Framework = "net10.0",
     [string]$TargetAbi = "12.0.0.0",
@@ -38,7 +38,7 @@ if (Test-Path $zipPath) {
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $metadata = [ordered]@{
     category = "Library"
-    changelog = "Fixes the Movie Versions page error 't.toLowerCase is not a function' on Jellyfin 12, keeps the 'Deleted ...' message visible after a delete, and removes a stray 'null' from the summary. Requires Jellyfin 12.0 or newer."
+    changelog = "Movie Versions: compact numbered list with expandable details; copies whose runtime is far from the film they matched (misidentified episodes) are left out and listed separately; among copies of the same quality, the one with more languages is kept instead of the higher-bitrate one. Requires Jellyfin 12.0 or newer."
     description = "Casifier wraps movie primary posters in DVD, Blu-ray, and Ultra HD case artwork based on video resolution. It can run on a schedule and after Jellyfin library scans."
     guid = "6de807d7-041d-4592-a278-91f04a37ec0f"
     imageUrl = $ImageUrl

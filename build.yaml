@@ -1,7 +1,7 @@
 ---
 name: "Casifier"
 guid: "6de807d7-041d-4592-a278-91f04a37ec0f"
-version: "0.1.16.0"
+version: "0.1.17.0"
 targetAbi: "12.0.0.0"
 framework: "net10.0"
 overview: "Generate DVD, Blu-ray, and Ultra HD case posters for Jellyfin movies."
@@ -17,4 +17,4 @@ artifacts:
   - "SixLabors.ImageSharp.dll"
   - "SixLabors.ImageSharp.Drawing.dll"
 changelog: >
-  Fixes the Movie Versions page error 't.toLowerCase is not a function' on Jellyfin 12, keeps the 'Deleted ...' message visible after a delete, and removes a stray 'null' from the summary. Requires Jellyfin 12.0 or newer.
+  Movie Versions: compact numbered list with expandable details; copies whose runtime is far from the film they matched (misidentified episodes) are left out and listed separately; among copies of the same quality, the one with more languages is kept instead of the higher-bitrate one. Requires Jellyfin 12.0 or newer.

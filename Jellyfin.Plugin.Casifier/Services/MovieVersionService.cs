@@ -52,6 +52,7 @@ public sealed class MovieVersionService
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         var context = new AnalysisContext(CreateLanguageResolver(), GetLibraryRoots());
         var groups = new List<MovieVersionGroup>();
+        var mismatches = new List<RuntimeMismatch>();
         var unreachable = 0;
 
         foreach (var cluster in FindClusters())
@@ -60,6 +61,7 @@ public sealed class MovieVersionService
             {
                 var analyzed = AnalyzeCluster(cluster, context);
                 unreachable += analyzed.Unreachable;
+                mismatches.AddRange(analyzed.Mismatches);
                 if (analyzed.Group is not null)
                 {
                     groups.Add(analyzed.Group);
@@ -72,15 +74,17 @@ public sealed class MovieVersionService
         }
 
         _logger.LogInformation(
-            "Casifier found {Count} movies with more than one copy in {Elapsed} ms ({Unreachable} copies on offline drives skipped)",
+            "Casifier found {Count} movies with more than one copy in {Elapsed} ms ({Unreachable} copies on offline drives skipped, {Mismatched} copies left out for a runtime mismatch)",
             groups.Count,
             stopwatch.ElapsedMilliseconds,
-            unreachable);
+            unreachable,
+            mismatches.Count);
 
         return new VersionReport
         {
             Movies = groups.OrderBy(g => g.Name, StringComparer.OrdinalIgnoreCase).ThenBy(g => g.Year).ToList(),
-            UnreachableVersions = unreachable
+            UnreachableVersions = unreachable,
+            RuntimeMismatches = mismatches.OrderBy(m => m.MatchedTo, StringComparer.OrdinalIgnoreCase).ThenBy(m => m.Path, StringComparer.OrdinalIgnoreCase).ToList()
         };
     }
 
@@ -254,9 +258,36 @@ public sealed class MovieVersionService
             }
         }
 
+        // A misidentified file (a 24-minute anime episode tagged as a 2-hour film) shares the film's
+        // TMDb id, and Jellyfin may even group it as a version. Copies of one film run about the same
+        // length, so anything far off is left out of the group and reported for a manual fix.
+        var mismatches = new List<RuntimeMismatch>();
+        var outliers = FindRuntimeOutliers(sources);
+        if (outliers.Count > 0)
+        {
+            var kept = sources.Where(s => !outliers.Contains(s)).ToList();
+            var expected = kept.Select(s => s.RunTimeTicks).Where(t => t is > 0).DefaultIfEmpty().Max();
+            foreach (var outlier in outliers)
+            {
+                var owner = owners[outlier.Id];
+                var reference = kept.Select(s => owners[s.Id]).FirstOrDefault() ?? owner;
+                mismatches.Add(new RuntimeMismatch
+                {
+                    MovieId = owner.Id,
+                    MatchedTo = reference.Name ?? string.Empty,
+                    MatchedToYear = reference.ProductionYear,
+                    Path = outlier.Path ?? string.Empty,
+                    RuntimeTicks = outlier.RunTimeTicks,
+                    ExpectedRuntimeTicks = expected
+                });
+            }
+
+            sources = kept;
+        }
+
         if (sources.Count < 2)
         {
-            return new AnalyzedCluster(null, new Dictionary<string, MediaSourceInfo>(), ownerSourceCounts, unreachable);
+            return new AnalyzedCluster(null, new Dictionary<string, MediaSourceInfo>(), ownerSourceCounts, unreachable, mismatches);
         }
 
         var versions = VersionAnalyzer.Analyze(sources, context.ResolveLanguage);
@@ -287,7 +318,52 @@ public sealed class MovieVersionService
             },
             sourcesById,
             ownerSourceCounts,
-            unreachable);
+            unreachable,
+            mismatches);
+    }
+
+    /// <summary>
+    /// Copies of the same film are within about a third of each other's length (theatrical vs.
+    /// extended cuts included). Sources are bucketed by runtime; the biggest bucket (ties: the one
+    /// holding the highest resolution, then the longest) is the film and the rest are outliers.
+    /// Sources without a runtime are never treated as outliers.
+    /// </summary>
+    internal static HashSet<MediaSourceInfo> FindRuntimeOutliers(IReadOnlyList<MediaSourceInfo> sources)
+    {
+        const double MinRuntimeRatio = 0.65;
+        var timed = sources.Where(s => s.RunTimeTicks is > 0).OrderBy(s => s.RunTimeTicks).ToList();
+        var buckets = new List<List<MediaSourceInfo>>();
+        foreach (var source in timed)
+        {
+            var current = buckets.Count > 0 ? buckets[^1] : null;
+            if (current is not null && (double)current[0].RunTimeTicks!.Value / source.RunTimeTicks!.Value >= MinRuntimeRatio)
+            {
+                current.Add(source);
+            }
+            else
+            {
+                buckets.Add([source]);
+            }
+        }
+
+        if (buckets.Count < 2)
+        {
+            return [];
+        }
+
+        static int MaxHeight(IEnumerable<MediaSourceInfo> bucket) => bucket
+            .SelectMany(s => s.MediaStreams ?? [])
+            .Where(s => s.Type == MediaStreamType.Video && !s.IsExternal)
+            .Select(s => s.Height ?? 0)
+            .DefaultIfEmpty(0)
+            .Max();
+
+        var main = buckets
+            .OrderByDescending(b => b.Count)
+            .ThenByDescending(MaxHeight)
+            .ThenByDescending(b => b[^1].RunTimeTicks)
+            .First();
+        return buckets.Where(b => !ReferenceEquals(b, main)).SelectMany(b => b).ToHashSet();
     }
 
     /// <summary>
@@ -469,7 +545,8 @@ public sealed class MovieVersionService
         MovieVersionGroup? Group,
         IReadOnlyDictionary<string, MediaSourceInfo> Sources,
         IReadOnlyDictionary<Guid, int> OwnerSourceCounts,
-        int Unreachable);
+        int Unreachable,
+        IReadOnlyList<RuntimeMismatch> Mismatches);
 }
 
 public sealed record VersionDeleteOutcome(int StatusCode, string Message, VersionDeleteResult? Result)

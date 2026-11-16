@@ -31,9 +31,15 @@ public static class VersionAnalyzer
     public static List<MovieVersion> Analyze(IReadOnlyList<MediaSourceInfo> sources, Func<string?, LanguageRef> resolveLanguage)
     {
         var facts = sources.Select(source => Describe(source, resolveLanguage)).ToList();
+        // Picture quality first. Between copies of the same quality (two DVDs), keep the one that
+        // holds the most: languages and commentaries nobody else has, then languages overall.
+        // Bitrate/size only break what's left.
         var ranked = facts
             .OrderByDescending(f => f.TierHeight)
             .ThenByDescending(f => f.RangeRank)
+            .ThenByDescending(f => UniqueContentCount(f, facts))
+            .ThenByDescending(f => f.AudioLanguages.Where(l => l.IsKnown).Select(l => l.Key).Distinct().Count())
+            .ThenByDescending(f => f.SubtitleLanguages.Where(l => l.IsKnown).Select(l => l.Key).Distinct().Count())
             .ThenByDescending(f => f.Source.Bitrate ?? 0)
             .ThenByDescending(f => f.Source.Size ?? 0)
             .ToList();
@@ -47,6 +53,17 @@ public static class VersionAnalyzer
         }
 
         return versions;
+    }
+
+    private static int UniqueContentCount(VersionFacts f, IReadOnlyList<VersionFacts> all)
+    {
+        var others = all.Where(other => !ReferenceEquals(other, f)).ToList();
+        var otherAudio = others.SelectMany(o => o.AudioLanguages).Select(l => l.Key).ToHashSet();
+        var otherSubs = others.SelectMany(o => o.SubtitleLanguages).Select(l => l.Key).ToHashSet();
+        var otherCommentary = others.SelectMany(o => o.CommentaryLanguages).Select(l => l.Key).ToHashSet();
+        return f.AudioLanguages.Where(l => l.IsKnown).Select(l => l.Key).Distinct().Count(k => !otherAudio.Contains(k))
+            + f.SubtitleLanguages.Where(l => l.IsKnown).Select(l => l.Key).Distinct().Count(k => !otherSubs.Contains(k))
+            + f.CommentaryLanguages.Select(l => l.Key).Distinct().Count(k => !otherCommentary.Contains(k));
     }
 
     private static MovieVersion Build(VersionFacts f, List<VersionFacts> others, bool isBest, int versionCount)

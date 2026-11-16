@@ -6,6 +6,26 @@ public sealed class VersionReport
 
     /// <summary>Versions skipped because their file couldn't be reached (offline drive, already deleted).</summary>
     public int UnreachableVersions { get; init; }
+
+    /// <summary>Copies left out of a group because their runtime is far from the film they were matched to.</summary>
+    public List<RuntimeMismatch> RuntimeMismatches { get; init; } = [];
+}
+
+public sealed class RuntimeMismatch
+{
+    /// <summary>The Jellyfin item that holds this file.</summary>
+    public Guid MovieId { get; init; }
+
+    /// <summary>The film it was matched to (by TMDb/IMDb id, title, or Jellyfin's own grouping).</summary>
+    public string MatchedTo { get; init; } = string.Empty;
+
+    public int? MatchedToYear { get; init; }
+
+    public string Path { get; init; } = string.Empty;
+
+    public long? RuntimeTicks { get; init; }
+
+    public long? ExpectedRuntimeTicks { get; init; }
 }
 
 public sealed class MovieVersionGroup
