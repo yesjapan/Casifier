@@ -76,7 +76,7 @@ Use this repository URL in Jellyfin. It always lists the latest release, so new 
 https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest.json
 ```
 
-The `manifest-10.11.6-v*.json` files in `repository/` are older pinned manifests. Each one only ever lists a single version, so a Jellyfin server pointed at one of them never sees newer releases.
+The other `.json` files in `repository/` (`manifest-10.11.6*.json`, `casifier-force-0.1.4.json`) are older manifest URLs. `tools\Package-Release.ps1` copies `manifest.json` over all of them on every release, so a server that still has one of them added as a repository gets the current Jellyfin 12 build, never an old 10.11 build that would fail on Jellyfin 12.
 
 After the release ZIP is attached to a GitHub release, add the URL in Jellyfin under Dashboard -> Plugins -> Repositories.
 

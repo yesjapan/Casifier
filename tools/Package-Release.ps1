@@ -72,6 +72,12 @@ if ($SourceUrl) {
 $manifestJson = "[`n" + ($plugin | ConvertTo-Json -Depth 10) + "`n]"
 [System.IO.File]::WriteAllText($manifestPath, $manifestJson, $utf8NoBom)
 
+# Older manifest URLs (manifest-10.11.6*.json etc.) mirror manifest.json, so a server that still
+# has one added as a repository is offered the current build instead of an old incompatible one.
+Get-ChildItem -LiteralPath (Split-Path $manifestPath) -Filter *.json |
+    Where-Object { $_.FullName -ne $manifestPath } |
+    ForEach-Object { [System.IO.File]::WriteAllText($_.FullName, $manifestJson, $utf8NoBom) }
+
 Write-Host "Created $zipPath"
 Write-Host "MD5 $checksum"
 Write-Host "Updated $manifestPath"
