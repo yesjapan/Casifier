@@ -14,6 +14,29 @@ Casifier reads each movie's current primary poster, stores a one-time backup bes
 
 Backups are named with `.casifier-original` before the original extension.
 
+## Movie Versions
+
+Dashboard -> Plugins -> **Movie Versions** (also linked from the Casifier settings page) lists every movie you have more than one copy of, including copies on different drives or in different libraries that Jellyfin shows as separate movies. Copies are matched when they:
+
+- are grouped as versions by Jellyfin (`Movie (2000) - DVD.mkv` beside `Movie (2000) - 2160p.mkv`), or
+- share a TMDb or IMDb ID, or
+- have the same title (ignoring accents, punctuation and a leading "The") and a year no more than one apart, unless their TMDb/IMDb IDs disagree. Title-only matches are flagged so you can confirm they are the same film.
+
+Copies on drives that are offline are skipped and counted at the top of the page.
+
+For each movie, versions are ranked by resolution (cropped encodes such as 1920x800 count as 1080p), then HDR, bitrate and size. The highest one is always kept. For every version the page shows:
+
+- The DVD / Blu-ray / Ultra HD badge, codec, HDR format, size, runtime and container
+- Audio and subtitle languages, with anything **no other version has** highlighted (an extra Japanese dub or Korean subtitles on the DVD, a commentary track)
+- Cautions it can't settle automatically: a runtime that doesn't match the other versions (possible different cut; PAL 4% speed-up is accounted for) and tracks with no language tag
+
+Lower versions can be deleted from the page after a confirmation that lists what would be lost and exactly what will be removed:
+
+- A copy that is the only video in its own movie folder inside a library (the usual case for a DVD on another drive) has that **folder** deleted, taking its artwork, NFO and subtitles with it.
+- Anything else (a folder holding other movies or extras, a flat folder of movies, a version Jellyfin grouped with others) has only its **video file** and the external subtitle/audio files Jellyfin attributes to it deleted.
+
+Casifier does not use Jellyfin's item delete for files, because for a movie stored in its own folder that removes the whole folder, including any other versions in it. Jellyfin is then told about the change so it drops the copy from the library. The Jellyfin server account needs write access to the media folders.
+
 ## Build
 
 ```powershell
@@ -39,71 +62,19 @@ You can package a release and update the manifest checksum with:
 
 ```powershell
 .\tools\Package-Release.ps1 `
-  -Version 0.1.10.0 `
-  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.10.0/Casifier_0.1.10.0.zip"
+  -Version 0.1.11.0 `
+  -SourceUrl "https://github.com/yesjapan/Casifier/releases/download/v0.1.11.0/Casifier_0.1.11.0.zip"
 ```
 
-For the `yesjapan/Casifier` GitHub repo, the Jellyfin repository URL will be:
+Use this repository URL in Jellyfin. It always lists the latest release, so new versions show up as updates:
 
 ```text
 https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest.json
 ```
 
-For Jellyfin 10.11.6 specifically, this cache-busting manifest URL is also available:
+The `manifest-10.11.6-v*.json` files in `repository/` are older pinned manifests. Each one only ever lists a single version, so a Jellyfin server pointed at one of them never sees newer releases.
 
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6.json
-```
-
-If Jellyfin keeps showing an older cached version, use the versioned manifest URL:
-
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.4.0.json
-```
-
-If Jellyfin still shows an older version, use the force manifest URL:
-
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/casifier-force-0.1.4.json
-```
-
-For the latest poster-dimension-preserving overlay build, use:
-
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.5.0.json
-```
-
-For the stabilized overlay build without experimental score lookup code, use:
-
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.6.0.json
-```
-
-For the diagnostic `0.1.7.0` build, use:
-
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.7.0.json
-```
-
-For the settings-preview-corrected `0.1.8.0` build, use:
-
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.8.0.json
-```
-
-For the multi-version resolution fix, use:
-
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.9.0.json
-```
-
-For source-name/file-name resolution detection, use:
-
-```text
-https://raw.githubusercontent.com/yesjapan/Casifier/main/repository/manifest-10.11.6-v0.1.10.0.json
-```
-
-After the repo exists and the release ZIP is attached to a GitHub release, add that URL in Jellyfin under Dashboard -> Plugins -> Repositories.
+After the release ZIP is attached to a GitHub release, add the URL in Jellyfin under Dashboard -> Plugins -> Repositories.
 
 ## GitHub Setup
 
@@ -118,11 +89,11 @@ Then create the public GitHub repo, push this project, and publish the first rel
 ```powershell
 gh repo create yesjapan/Casifier --public --source . --push
 
-gh release create v0.1.10.0 `
-  .\dist\Casifier_0.1.10.0.zip `
+gh release create v0.1.11.0 `
+  .\dist\Casifier_0.1.11.0.zip `
   --repo yesjapan/Casifier `
-  --title "Casifier 0.1.10.0" `
-  --notes "Detect resolution from media source and file names when stream height metadata is missing."
+  --title "Casifier 0.1.11.0" `
+  --notes "Add a Movie Versions page for finding and removing duplicate copies of movies."
 ```
 
 ## Notes

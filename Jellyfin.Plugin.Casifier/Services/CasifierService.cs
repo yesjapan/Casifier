@@ -88,7 +88,7 @@ public sealed class CasifierService
             return false;
         }
 
-        var caseKind = ResolveCaseKind(height.Value);
+        var caseKind = MediaResolution.ResolveCaseKind(height.Value);
         var sourcePath = EnsureBackup(image.Path, config.BackupSuffix);
         await RenderCaseAsync(sourcePath, image.Path, caseKind, cancellationToken).ConfigureAwait(false);
         File.SetLastWriteTimeUtc(image.Path, DateTime.UtcNow);
@@ -110,21 +110,6 @@ public sealed class CasifierService
         return backupPath;
     }
 
-    private static CaseKind ResolveCaseKind(int height)
-    {
-        if (height >= 2160)
-        {
-            return CaseKind.UltraHd;
-        }
-
-        if (height >= 1080)
-        {
-            return CaseKind.Bluray;
-        }
-
-        return CaseKind.Dvd;
-    }
-
     private static int? GetHighestVideoHeight(Movie movie)
     {
         var heights = new List<int>();
@@ -135,24 +120,24 @@ public sealed class CasifierService
                 .Where(stream => stream.Type == MediaStreamType.Video && stream.Height.HasValue)
                 .Select(stream => stream.Height!.Value));
 
-            if (TryInferHeight(source.Name, out var sourceNameHeight))
+            if (MediaResolution.TryInferHeight(source.Name, out var sourceNameHeight))
             {
                 heights.Add(sourceNameHeight);
             }
 
-            if (TryInferHeight(source.Path, out var sourcePathHeight))
+            if (MediaResolution.TryInferHeight(source.Path, out var sourcePathHeight))
             {
                 heights.Add(sourcePathHeight);
             }
 
             foreach (var stream in source.MediaStreams.Where(stream => stream.Type == MediaStreamType.Video))
             {
-                if (TryInferHeight(stream.DisplayTitle, out var displayHeight))
+                if (MediaResolution.TryInferHeight(stream.DisplayTitle, out var displayHeight))
                 {
                     heights.Add(displayHeight);
                 }
 
-                if (TryInferHeight(stream.Codec, out var codecHeight))
+                if (MediaResolution.TryInferHeight(stream.Codec, out var codecHeight))
                 {
                     heights.Add(codecHeight);
                 }
@@ -168,45 +153,6 @@ public sealed class CasifierService
         return heights.Count == 0 ? null : heights.Max();
     }
 
-    private static bool TryInferHeight(string? value, out int height)
-    {
-        height = 0;
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return false;
-        }
-
-        var normalized = value.ToUpperInvariant();
-        if (ContainsAny(normalized, "2160P", "2160", "4K", "UHD", "ULTRAHD", "ULTRA HD"))
-        {
-            height = 2160;
-            return true;
-        }
-
-        if (ContainsAny(normalized, "1080P", "1080", "FHD", "FULLHD", "FULL HD", "BLURAY", "BLU-RAY", "BDRIP", "BDREMUX", "BD REMUX"))
-        {
-            height = 1080;
-            return true;
-        }
-
-        if (ContainsAny(normalized, "720P", "720"))
-        {
-            height = 720;
-            return true;
-        }
-
-        if (ContainsAny(normalized, "DVD", "DVDRIP", "DVD-RIP"))
-        {
-            height = 480;
-            return true;
-        }
-
-        return false;
-    }
-
-    private static bool ContainsAny(string value, params string[] candidates)
-        => candidates.Any(candidate => value.Contains(candidate, StringComparison.OrdinalIgnoreCase));
-
     private static async Task RenderCaseAsync(string sourcePath, string outputPath, CaseKind caseKind, CancellationToken cancellationToken)
     {
         using var poster = await Image.LoadAsync<Rgba32>(sourcePath, cancellationToken).ConfigureAwait(false);
@@ -221,7 +167,7 @@ public sealed class CasifierService
 
         using var canvas = new Image<Rgba32>(canvasWidth, canvasHeight, Color.Black);
         var palette = GetPalette(caseKind);
-        var label = GetLabel(caseKind);
+        var label = MediaResolution.GetCaseLabel(caseKind);
 
         canvas.Mutate(ctx =>
         {
@@ -245,14 +191,6 @@ public sealed class CasifierService
             CaseKind.UltraHd => (Color.ParseHex("171717"), Color.ParseHex("060606"), Color.ParseHex("f6d451")),
             CaseKind.Bluray => (Color.ParseHex("1658ba"), Color.ParseHex("0b3477"), Color.White),
             _ => (Color.ParseHex("f2f2f2"), Color.ParseHex("d8d8d8"), Color.ParseHex("202020"))
-        };
-
-    private static string GetLabel(CaseKind caseKind)
-        => caseKind switch
-        {
-            CaseKind.UltraHd => "ULTRA HD",
-            CaseKind.Bluray => "BLU-RAY",
-            _ => "DVD"
         };
 
     private static void DrawHighlights(IImageProcessingContext ctx, Rectangle wholeRect, Rectangle bandRect)

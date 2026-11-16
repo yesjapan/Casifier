@@ -23,16 +23,29 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
     public IEnumerable<PluginPageInfo> GetPages()
     {
+        // The settings page must stay first: Jellyfin opens the first page from the plugin list.
         return
         [
             new PluginPageInfo
             {
                 Name = Name,
-                EmbeddedResourcePath = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{0}.Configuration.configPage.html",
-                    GetType().Namespace)
+                EmbeddedResourcePath = GetResourcePath("configPage.html")
+            },
+            new PluginPageInfo
+            {
+                Name = "CasifierVersions",
+                DisplayName = "Movie Versions",
+                EmbeddedResourcePath = GetResourcePath("versionsPage.html"),
+                EnableInMainMenu = true,
+                MenuIcon = "video_library"
             }
         ];
     }
+
+    private string GetResourcePath(string fileName)
+        => string.Format(
+            CultureInfo.InvariantCulture,
+            "{0}.Configuration.{1}",
+            GetType().Namespace,
+            fileName);
 }

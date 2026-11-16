@@ -116,6 +116,14 @@
           </div>
         </div>
 
+        <div class="verticalSection" style="margin-bottom: 2em;">
+          <h3 class="sectionTitle">Movie versions</h3>
+          <p class="fieldDescription">Review movies that have more than one version, see which dubs, subtitles or cuts only one version has, and delete lower versions.</p>
+          <button is="emby-button" type="button" class="raised" id="CasifierOpenVersions">
+            <span>Open Movie Versions</span>
+          </button>
+        </div>
+
         <label class="checkboxContainer">
           <input is="emby-checkbox" type="checkbox" id="Enabled" />
           <span>Enable Casifier</span>
@@ -149,6 +157,13 @@
     (() => {
       const pluginId = '6de807d7-041d-4592-a278-91f04a37ec0f';
       const page = document.querySelector('#CasifierConfigPage');
+
+      page.querySelector('#CasifierOpenVersions').addEventListener('click', () => {
+        const url = typeof Dashboard.getPluginUrl === 'function'
+          ? Dashboard.getPluginUrl('CasifierVersions')
+          : 'configurationpage?name=CasifierVersions';
+        Dashboard.navigate(url);
+      });
 
       page.addEventListener('pageshow', async () => {
         Dashboard.showLoadingMsg();

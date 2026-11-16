@@ -1,0 +1,604 @@
+<div id="CasifierVersionsPage" data-role="page" class="page type-interior pluginConfigurationPage">
+  <div data-role="content">
+    <div class="content-primary">
+      <style>
+        #CasifierVersionsPage .cvIntro {
+          max-width: 46em;
+          margin: 0 0 1.25em;
+          color: var(--secondaryTextColor, inherit);
+          line-height: 1.5;
+        }
+
+        #CasifierVersionsPage .cvToolbar {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          gap: 0 1em;
+        }
+
+        #CasifierVersionsPage .cvToolbar .inputContainer,
+        #CasifierVersionsPage .cvToolbar .selectContainer {
+          flex: 1 1 14em;
+          margin-bottom: 1em;
+        }
+
+        #CasifierVersionsPage .cvToolbar .cvRefresh {
+          margin: 0 0 1.4em;
+        }
+
+        #CasifierVersionsPage .cvSummary {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5em 2em;
+          margin: 0 0 1.5em;
+        }
+
+        #CasifierVersionsPage .cvStat strong {
+          display: block;
+          font-size: 1.5em;
+          font-variant-numeric: tabular-nums;
+        }
+
+        #CasifierVersionsPage .cvStat span {
+          color: var(--secondaryTextColor, inherit);
+          font-size: 0.9em;
+        }
+
+        #CasifierVersionsPage .cvMessage {
+          margin: 0 0 1.25em;
+          padding: 0.75em 1em;
+          border-radius: 0.35em;
+          border-left: 0.3em solid #52b54b;
+          background: rgba(82, 181, 75, 0.14);
+        }
+
+        #CasifierVersionsPage .cvMessage.isError {
+          border-left-color: #e05555;
+          background: rgba(224, 85, 85, 0.14);
+        }
+
+        #CasifierVersionsPage .cvMovie {
+          margin: 0 0 1.5em;
+          padding: 1em;
+          border: 1px solid rgba(128, 128, 128, 0.28);
+          border-radius: 0.5em;
+        }
+
+        #CasifierVersionsPage .cvMovieHeader {
+          display: flex;
+          align-items: center;
+          gap: 1em;
+          margin-bottom: 1em;
+        }
+
+        #CasifierVersionsPage .cvPoster {
+          flex: none;
+          width: 3.25em;
+          aspect-ratio: 2 / 3;
+          object-fit: cover;
+          border-radius: 0.2em;
+          background: rgba(128, 128, 128, 0.2);
+        }
+
+        #CasifierVersionsPage .cvMovieTitle {
+          margin: 0;
+          font-size: 1.2em;
+        }
+
+        #CasifierVersionsPage .cvMovieTitle a {
+          color: inherit;
+          text-decoration: none;
+        }
+
+        #CasifierVersionsPage .cvMovieTitle a:hover {
+          text-decoration: underline;
+        }
+
+        #CasifierVersionsPage .cvMovieMeta {
+          margin-top: 0.2em;
+          color: var(--secondaryTextColor, inherit);
+          font-size: 0.9em;
+        }
+
+        #CasifierVersionsPage .cvVersions {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(min(17em, 100%), 1fr));
+          gap: 1em;
+        }
+
+        #CasifierVersionsPage .cvVersion {
+          display: flex;
+          flex-direction: column;
+          gap: 0.6em;
+          min-width: 0;
+          padding: 0.9em;
+          border: 1px solid rgba(128, 128, 128, 0.28);
+          border-radius: 0.4em;
+        }
+
+        #CasifierVersionsPage .cvVersion.isBest {
+          border-color: rgba(82, 181, 75, 0.65);
+        }
+
+        #CasifierVersionsPage .cvVersion.hasUnique {
+          border-color: rgba(240, 165, 0, 0.75);
+        }
+
+        #CasifierVersionsPage .cvVersionHead {
+          display: flex;
+          align-items: center;
+          gap: 0.6em;
+          flex-wrap: wrap;
+        }
+
+        #CasifierVersionsPage .cvBadge {
+          display: inline-block;
+          padding: 0.25em 0.6em;
+          border-radius: 0.2em;
+          border: 1px solid rgba(128, 128, 128, 0.45);
+          font: 700 0.8em/1.2 Arial, sans-serif;
+          letter-spacing: 0.04em;
+        }
+
+        #CasifierVersionsPage .cvBadge.dvd { background: #f2f2f2; color: #202020; }
+        #CasifierVersionsPage .cvBadge.bluray { background: #1658ba; color: #fff; }
+        #CasifierVersionsPage .cvBadge.uhd { background: #171717; color: #f6d451; }
+
+        #CasifierVersionsPage .cvVersionName {
+          font-weight: 600;
+          overflow-wrap: anywhere;
+        }
+
+        #CasifierVersionsPage .cvSpecs {
+          color: var(--secondaryTextColor, inherit);
+          font-size: 0.9em;
+          line-height: 1.45;
+        }
+
+        #CasifierVersionsPage .cvRow {
+          display: grid;
+          grid-template-columns: 5.5em 1fr;
+          gap: 0.5em;
+          align-items: baseline;
+        }
+
+        #CasifierVersionsPage .cvRowLabel {
+          color: var(--secondaryTextColor, inherit);
+          font-size: 0.85em;
+        }
+
+        #CasifierVersionsPage .cvChips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.3em;
+        }
+
+        #CasifierVersionsPage .cvChip {
+          padding: 0.15em 0.55em;
+          border-radius: 1em;
+          border: 1px solid transparent;
+          background: rgba(128, 128, 128, 0.2);
+          font-size: 0.85em;
+        }
+
+        #CasifierVersionsPage .cvChip.isUnique {
+          border-color: rgba(240, 165, 0, 0.85);
+          background: rgba(240, 165, 0, 0.2);
+          font-weight: 600;
+        }
+
+        #CasifierVersionsPage .cvNone {
+          color: var(--secondaryTextColor, inherit);
+          font-size: 0.85em;
+        }
+
+        #CasifierVersionsPage .cvStatus {
+          padding: 0.55em 0.7em;
+          border-radius: 0.3em;
+          font-size: 0.88em;
+          line-height: 1.4;
+        }
+
+        #CasifierVersionsPage .cvStatus ul {
+          margin: 0.3em 0 0;
+          padding-left: 1.2em;
+        }
+
+        #CasifierVersionsPage .cvStatus.best { background: rgba(82, 181, 75, 0.14); }
+        #CasifierVersionsPage .cvStatus.safe { background: rgba(128, 128, 128, 0.14); }
+        #CasifierVersionsPage .cvStatus.unique { background: rgba(240, 165, 0, 0.16); }
+        #CasifierVersionsPage .cvStatus.check { background: rgba(240, 165, 0, 0.1); }
+
+        #CasifierVersionsPage details {
+          font-size: 0.85em;
+        }
+
+        #CasifierVersionsPage summary {
+          cursor: pointer;
+          color: var(--secondaryTextColor, inherit);
+        }
+
+        #CasifierVersionsPage .cvTracks {
+          margin: 0.4em 0 0;
+          padding-left: 1.1em;
+          line-height: 1.5;
+        }
+
+        #CasifierVersionsPage .cvPath {
+          font-family: Consolas, Menlo, monospace;
+          font-size: 0.78em;
+          opacity: 0.7;
+          overflow-wrap: anywhere;
+        }
+
+        #CasifierVersionsPage .cvActions {
+          margin-top: auto;
+          padding-top: 0.3em;
+        }
+
+        #CasifierVersionsPage .cvActions .emby-button,
+        #CasifierVersionsPage .cvActions button {
+          width: 100%;
+          margin: 0;
+        }
+
+        #CasifierVersionsPage .cvBlocked {
+          color: var(--secondaryTextColor, inherit);
+          font-size: 0.85em;
+        }
+
+        #CasifierVersionsPage .cvNote {
+          flex-basis: 100%;
+          color: var(--secondaryTextColor, inherit);
+          font-size: 0.88em;
+        }
+
+        #CasifierVersionsPage .cvMatchWarn {
+          margin-top: 0.4em;
+          padding: 0.35em 0.6em;
+          border-radius: 0.3em;
+          background: rgba(240, 165, 0, 0.16);
+          font-size: 0.88em;
+        }
+
+        #CasifierVersionsPage .cvEmpty {
+          padding: 2em 0;
+          color: var(--secondaryTextColor, inherit);
+        }
+      </style>
+
+      <div class="sectionTitleContainer flex align-items-center">
+        <h2 class="sectionTitle">Movie Versions</h2>
+      </div>
+
+      <p class="cvIntro">
+        Movies you have more than one copy of (DVD, Blu-ray, Ultra HD), even on different drives or in different
+        libraries. Copies are matched by TMDb or IMDb ID, or by title and year. The best copy of each movie is kept.
+        Anything a lower copy has that no other copy has, such as an extra dub, subtitle language,
+        commentary or a different cut, is highlighted before you delete it.
+      </p>
+
+      <div class="cvToolbar">
+        <div class="inputContainer">
+          <input is="emby-input" type="search" id="cvSearch" label="Search movies" autocomplete="off" />
+        </div>
+        <div class="selectContainer">
+          <select is="emby-select" id="cvFilter" label="Show">
+            <option value="all">All movies with versions</option>
+            <option value="safe">Lower versions with nothing unique</option>
+            <option value="review">Lower versions with unique features</option>
+            <option value="title">Matched by title only (verify)</option>
+          </select>
+        </div>
+        <button is="emby-button" type="button" class="raised cvRefresh" id="cvRefresh">
+          <span>Refresh</span>
+        </button>
+      </div>
+
+      <div class="cvMessage" id="cvMessage" hidden></div>
+      <div class="cvSummary" id="cvSummary"></div>
+      <div id="cvList"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    (() => {
+      const page = document.querySelector('#CasifierVersionsPage');
+      const list = page.querySelector('#cvList');
+      const summary = page.querySelector('#cvSummary');
+      const message = page.querySelector('#cvMessage');
+      const search = page.querySelector('#cvSearch');
+      const filter = page.querySelector('#cvFilter');
+      let movies = [];
+      let unreachable = 0;
+
+      const el = (tag, props, ...children) => {
+        const options = props && props.is ? { is: props.is } : undefined;
+        const node = document.createElement(tag, options);
+        for (const [key, value] of Object.entries(props || {})) {
+          if (value === undefined || value === null || value === false || key === 'is') continue;
+          if (key === 'className') node.className = value;
+          else if (key === 'text') node.textContent = value;
+          else if (key.startsWith('on')) node.addEventListener(key.slice(2), value);
+          else node.setAttribute(key, value === true ? '' : value);
+        }
+        for (const child of children.flat()) {
+          if (child === null || child === undefined || child === false) continue;
+          node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+        }
+        return node;
+      };
+
+      const formatBytes = bytes => {
+        if (!bytes) return null;
+        const gb = bytes / 1024 ** 3;
+        return gb >= 1 ? `${gb.toFixed(1)} GB` : `${Math.round(bytes / 1024 ** 2)} MB`;
+      };
+
+      const formatRuntime = ticks => {
+        if (!ticks) return null;
+        const minutes = Math.round(ticks / 600000000);
+        return minutes >= 60 ? `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, '0')}m` : `${minutes}m`;
+      };
+
+      const isLower = version => !version.IsBest;
+      const hasConcerns = version => version.UniqueFeatures.length > 0 || version.Cautions.length > 0;
+      const isSafeLower = version => isLower(version) && version.CanDelete && !hasConcerns(version);
+
+      const showMessage = (text, isError) => {
+        message.textContent = text;
+        message.classList.toggle('isError', !!isError);
+        message.hidden = !text;
+      };
+
+      const readError = async error => {
+        try {
+          if (error && typeof error.text === 'function') {
+            const body = await error.text();
+            try {
+              return JSON.parse(body).Message || body;
+            } catch {
+              return body || `Request failed (${error.status})`;
+            }
+          }
+        } catch {
+          // fall through
+        }
+        return (error && error.message) || 'Request failed.';
+      };
+
+      const renderSummary = () => {
+        const lower = movies.flatMap(movie => movie.Versions.filter(isLower));
+        const safe = lower.filter(isSafeLower);
+        const review = lower.filter(hasConcerns);
+        const reclaimable = safe.reduce((total, version) => total + (version.SizeBytes || 0), 0);
+        const stat = (value, label) => el('div', { className: 'cvStat' }, el('strong', { text: value }), el('span', { text: label }));
+        summary.replaceChildren(
+          stat(movies.length, 'movies with versions'),
+          stat(lower.length, 'lower versions'),
+          stat(safe.length, 'with nothing unique'),
+          stat(review.length, 'with unique features'),
+          stat(formatBytes(reclaimable) || '0 GB', 'in versions with nothing unique'),
+          unreachable
+            ? el('div', { className: 'cvNote', text: `${unreachable} ${unreachable === 1 ? 'copy was' : 'copies were'} skipped because the file couldn't be reached (offline drive or already deleted). Connect the drive and refresh to include ${unreachable === 1 ? 'it' : 'them'}.` })
+            : null
+        );
+      };
+
+      const chips = languages => languages.length
+        ? el('div', { className: 'cvChips' }, languages.map(language => el('span', {
+            className: language.IsUnique ? 'cvChip isUnique' : 'cvChip',
+            title: language.IsUnique ? 'Only in this version' : null,
+            text: language.Name
+          })))
+        : el('span', { className: 'cvNone', text: 'None' });
+
+      const describeAudio = track => [
+        track.Language,
+        [track.Format, track.Channels].filter(Boolean).join(' '),
+        track.Title && `“${track.Title}”`,
+        track.IsCommentary && 'commentary',
+        track.IsDefault && 'default',
+        track.IsExternal && 'external file'
+      ].filter(Boolean).join(' · ');
+
+      const describeSubtitle = track => [
+        track.Language,
+        track.Format,
+        track.Title && `“${track.Title}”`,
+        track.IsForced && 'forced',
+        track.IsHearingImpaired && 'SDH',
+        track.IsExternal && 'external file'
+      ].filter(Boolean).join(' · ');
+
+      const renderStatus = version => {
+        if (version.IsBest) {
+          return el('div', { className: 'cvStatus best' },
+            'Best version, kept.',
+            version.UniqueFeatures.length ? el('ul', null, version.UniqueFeatures.map(f => el('li', { text: `Only here: ${f}` }))) : null);
+        }
+        if (version.UniqueFeatures.length) {
+          return el('div', { className: 'cvStatus unique' },
+            el('strong', { text: 'Only in this version:' }),
+            el('ul', null, version.UniqueFeatures.map(f => el('li', { text: f }))),
+            version.Cautions.length ? el('strong', { text: 'Also check:' }) : null,
+            version.Cautions.length ? el('ul', null, version.Cautions.map(c => el('li', { text: c }))) : null);
+        }
+        if (version.Cautions.length) {
+          return el('div', { className: 'cvStatus check' },
+            el('strong', { text: 'Check before deleting:' }),
+            el('ul', null, version.Cautions.map(c => el('li', { text: c }))));
+        }
+        return el('div', { className: 'cvStatus safe', text: 'Nothing unique. Everything here is in another version.' });
+      };
+
+      const confirmText = (movie, version) => {
+        const lines = [
+          `Delete the ${version.CaseLabel} version of "${movie.Name}"${movie.Year ? ` (${movie.Year})` : ''}?`,
+          '',
+          version.DeletesFolder
+            ? `Deletes the folder: ${version.DeleteTarget}
+(the video plus everything else in that folder: artwork, NFO, subtitles)`
+            : `Deletes the file: ${version.DeleteTarget}
+(plus external subtitle/audio files Jellyfin links to it)`
+        ];
+        if (movie.TitleMatchOnly) {
+          lines.push('', 'WARNING: this copy was matched by title and year only. Make sure it is really the same film.');
+        }
+        const size = formatBytes(version.SizeBytes);
+        if (size) lines.push(`Size: ${size}`);
+        if (version.UniqueFeatures.length) {
+          lines.push('', 'You will LOSE these. No other version has them:', ...version.UniqueFeatures.map(f => `  • ${f}`));
+        }
+        if (version.Cautions.length) {
+          lines.push('', 'Not verified automatically:', ...version.Cautions.map(c => `  • ${c}`));
+        }
+        lines.push('', 'This is permanently deleted from disk and cannot be undone.');
+        return lines.join('\n');
+      };
+
+      const deleteVersion = async (movie, version, button) => {
+        if (!window.confirm(confirmText(movie, version))) return;
+
+        button.disabled = true;
+        button.textContent = 'Deleting…';
+        try {
+          const result = await ApiClient.ajax({
+            type: 'DELETE',
+            url: ApiClient.getUrl(`Casifier/Versions/${version.MovieId}/${encodeURIComponent(version.Id)}`),
+            dataType: 'json'
+          });
+          const freed = formatBytes(result && result.FreedBytes);
+          showMessage(`${(result && result.Message) || 'Version deleted.'}${freed ? ` Freed ${freed}.` : ''} Jellyfin will drop it from the library shortly.`);
+          await load(false);
+        } catch (error) {
+          showMessage(await readError(error), true);
+          button.disabled = false;
+          button.textContent = `Delete ${version.CaseLabel} version`;
+        }
+      };
+
+      const renderVersion = (movie, version) => {
+        const specs = [
+          version.Resolution,
+          version.VideoCodec,
+          version.VideoRange && version.VideoRange !== 'SDR' ? version.VideoRange : null,
+          formatBytes(version.SizeBytes),
+          formatRuntime(version.RuntimeTicks),
+          version.Container
+        ].filter(Boolean).join(' · ');
+
+        const classes = ['cvVersion'];
+        if (version.IsBest) classes.push('isBest');
+        else if (version.UniqueFeatures.length) classes.push('hasUnique');
+
+        let action;
+        if (version.CanDelete) {
+          const button = el('button', {
+            is: 'emby-button',
+            type: 'button',
+            className: 'raised button-delete emby-button',
+            text: `Delete ${version.CaseLabel} version`
+          });
+          button.addEventListener('click', () => deleteVersion(movie, version, button));
+          action = button;
+        } else if (!version.IsBest) {
+          action = el('div', { className: 'cvBlocked', text: `Can't delete here: ${version.DeleteBlockedReason}` });
+        }
+
+        return el('div', { className: classes.join(' ') },
+          el('div', { className: 'cvVersionHead' },
+            el('span', { className: `cvBadge ${version.CaseKey}`, text: version.CaseLabel }),
+            el('span', { className: 'cvVersionName', text: version.Name })),
+          el('div', { className: 'cvSpecs', text: specs }),
+          el('div', { className: 'cvRow' }, el('span', { className: 'cvRowLabel', text: 'Audio' }), chips(version.AudioLanguages)),
+          el('div', { className: 'cvRow' }, el('span', { className: 'cvRowLabel', text: 'Subtitles' }), chips(version.SubtitleLanguages)),
+          renderStatus(version),
+          el('details', null,
+            el('summary', { text: `${version.AudioTracks.length} audio · ${version.SubtitleTracks.length} subtitle tracks` }),
+            el('ul', { className: 'cvTracks' },
+              version.AudioTracks.map(track => el('li', { text: `Audio: ${describeAudio(track)}` })),
+              version.SubtitleTracks.map(track => el('li', { text: `Subtitle: ${describeSubtitle(track)}` })))),
+          el('div', { className: 'cvPath', text: version.Path }),
+          action ? el('div', { className: 'cvActions' }, action) : null);
+      };
+
+      const renderMovie = movie => {
+        const poster = movie.HasPrimaryImage
+          ? el('img', {
+              className: 'cvPoster',
+              alt: '',
+              loading: 'lazy',
+              src: ApiClient.getImageUrl(movie.MovieId, { type: 'Primary', maxHeight: 180, quality: 90 })
+            })
+          : el('div', { className: 'cvPoster' });
+
+        return el('section', { className: 'cvMovie' },
+          el('div', { className: 'cvMovieHeader' },
+            poster,
+            el('div', null,
+              el('h3', { className: 'cvMovieTitle' },
+                el('a', { href: `#/details?id=${movie.MovieId}`, text: movie.Name })),
+              el('div', { className: 'cvMovieMeta', text: [
+                movie.Year,
+                `${movie.Versions.length} versions`,
+                movie.MatchedBy.length ? `matched by ${movie.MatchedBy.join(', ')}` : null
+              ].filter(Boolean).join(' · ') }),
+              movie.TitleMatchOnly
+                ? el('div', { className: 'cvMatchWarn', text: 'Matched by title and year only. Check these are the same film before deleting.' })
+                : null)),
+          el('div', { className: 'cvVersions' }, movie.Versions.map(version => renderVersion(movie, version))));
+      };
+
+      const render = () => {
+        renderSummary();
+        const query = search.value.trim().toLowerCase();
+        const mode = filter.value;
+        const visible = movies.filter(movie => {
+          if (query && !movie.Name.toLowerCase().includes(query)) return false;
+          if (mode === 'safe') return movie.Versions.some(isSafeLower);
+          if (mode === 'review') return movie.Versions.some(version => isLower(version) && hasConcerns(version));
+          if (mode === 'title') return movie.TitleMatchOnly;
+          return true;
+        });
+
+        if (!movies.length) {
+          list.replaceChildren(el('div', { className: 'cvEmpty' },
+            'No movies with more than one copy found. Copies are matched by TMDb/IMDb ID or by title and year, ',
+            'so make sure each copy has been identified in Jellyfin. Copies on drives that are currently offline are skipped.'));
+          return;
+        }
+
+        list.replaceChildren(...(visible.length
+          ? visible.map(renderMovie)
+          : [el('div', { className: 'cvEmpty', text: 'No movies match this filter.' })]));
+      };
+
+      const load = async showSpinner => {
+        if (showSpinner) Dashboard.showLoadingMsg();
+        try {
+          const report = await ApiClient.getJSON(ApiClient.getUrl('Casifier/Versions'));
+          movies = (report && report.Movies) || [];
+          unreachable = (report && report.UnreachableVersions) || 0;
+          render();
+        } catch (error) {
+          showMessage(`Could not load movie versions: ${await readError(error)}`, true);
+        } finally {
+          if (showSpinner) Dashboard.hideLoadingMsg();
+        }
+      };
+
+      search.addEventListener('input', render);
+      filter.addEventListener('change', render);
+      page.querySelector('#cvRefresh').addEventListener('click', () => {
+        showMessage('');
+        load(true);
+      });
+
+      page.addEventListener('pageshow', () => {
+        showMessage('');
+        load(true);
+      });
+    })();
+  </script>
+</div>
