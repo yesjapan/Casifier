@@ -303,7 +303,10 @@
 
   <script type="text/javascript">
     (() => {
-      const page = document.querySelector('#CasifierVersionsPage');
+      // Jellyfin keeps earlier copies of a page in the DOM. The copy this script belongs to was
+      // appended last, so bind to that one rather than the first match.
+      const instances = document.querySelectorAll('#CasifierVersionsPage');
+      const page = instances[instances.length - 1];
       const list = page.querySelector('#cvList');
       const summary = page.querySelector('#cvSummary');
       const message = page.querySelector('#cvMessage');
@@ -574,31 +577,41 @@
           : [el('div', { className: 'cvEmpty', text: 'No movies match this filter.' })]));
       };
 
-      const load = async showSpinner => {
-        if (showSpinner) Dashboard.showLoadingMsg();
-        try {
-          const report = await ApiClient.getJSON(ApiClient.getUrl('Casifier/Versions'));
-          movies = (report && report.Movies) || [];
-          unreachable = (report && report.UnreachableVersions) || 0;
-          render();
-        } catch (error) {
-          showMessage(`Could not load movie versions: ${await readError(error)}`, true);
-        } finally {
-          if (showSpinner) Dashboard.hideLoadingMsg();
-        }
+      let loading = null;
+      const load = () => {
+        if (loading) return loading;
+        showMessage('');
+        summary.replaceChildren(el('div', { className: 'cvStat', text: 'Scanning your movie libraries…' }));
+        list.replaceChildren();
+        Dashboard.showLoadingMsg();
+        loading = (async () => {
+          try {
+            const report = await ApiClient.getJSON(ApiClient.getUrl('Casifier/Versions'));
+            movies = (report && report.Movies) || [];
+            unreachable = (report && report.UnreachableVersions) || 0;
+            render();
+          } catch (error) {
+            summary.replaceChildren();
+            showMessage(`Could not load movie versions: ${await readError(error)}`, true);
+          } finally {
+            Dashboard.hideLoadingMsg();
+            loading = null;
+          }
+        })();
+        return loading;
       };
 
       search.addEventListener('input', render);
       filter.addEventListener('change', render);
-      page.querySelector('#cvRefresh').addEventListener('click', () => {
-        showMessage('');
-        load(true);
-      });
+      page.querySelector('#cvRefresh').addEventListener('click', load);
 
-      page.addEventListener('pageshow', () => {
-        showMessage('');
-        load(true);
+      // Load straight away, and again whenever Jellyfin shows this page from its cache.
+      let shown = false;
+      page.addEventListener('viewshow', event => {
+        if (shown && event.detail && event.detail.isRestored) load();
+        shown = true;
       });
+      load();
     })();
   </script>
 </div>

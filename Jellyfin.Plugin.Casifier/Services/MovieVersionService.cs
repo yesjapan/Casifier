@@ -49,6 +49,7 @@ public sealed class MovieVersionService
 
     public VersionReport GetReport()
     {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         var context = new AnalysisContext(CreateLanguageResolver(), GetLibraryRoots());
         var groups = new List<MovieVersionGroup>();
         var unreachable = 0;
@@ -69,6 +70,12 @@ public sealed class MovieVersionService
                 _logger.LogWarning(ex, "Casifier could not compare versions of {MovieName}", cluster.Movies[0].Name);
             }
         }
+
+        _logger.LogInformation(
+            "Casifier found {Count} movies with more than one copy in {Elapsed} ms ({Unreachable} copies on offline drives skipped)",
+            groups.Count,
+            stopwatch.ElapsedMilliseconds,
+            unreachable);
 
         return new VersionReport
         {

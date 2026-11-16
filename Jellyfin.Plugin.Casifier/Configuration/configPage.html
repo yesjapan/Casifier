@@ -156,7 +156,9 @@
   <script type="text/javascript">
     (() => {
       const pluginId = '6de807d7-041d-4592-a278-91f04a37ec0f';
-      const page = document.querySelector('#CasifierConfigPage');
+      // Jellyfin keeps earlier copies of a page in the DOM; this script's copy was appended last.
+      const instances = document.querySelectorAll('#CasifierConfigPage');
+      const page = instances[instances.length - 1];
 
       page.querySelector('#CasifierOpenVersions').addEventListener('click', () => {
         const url = typeof Dashboard.getPluginUrl === 'function'

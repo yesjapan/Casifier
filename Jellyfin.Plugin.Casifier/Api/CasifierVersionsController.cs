@@ -4,6 +4,7 @@ using Jellyfin.Plugin.Casifier.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.Casifier.Api;
 
@@ -15,15 +16,29 @@ namespace Jellyfin.Plugin.Casifier.Api;
 public sealed class CasifierVersionsController : ControllerBase
 {
     private readonly MovieVersionService _versions;
+    private readonly ILogger<CasifierVersionsController> _logger;
 
-    public CasifierVersionsController(MovieVersionService versions)
+    public CasifierVersionsController(MovieVersionService versions, ILogger<CasifierVersionsController> logger)
     {
         _versions = versions;
+        _logger = logger;
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult<VersionReport> GetVersions() => _versions.GetReport();
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<VersionReport> GetVersions()
+    {
+        try
+        {
+            return _versions.GetReport();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Casifier could not build the movie versions report");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+        }
+    }
 
     [HttpDelete("{movieId}/{versionId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
