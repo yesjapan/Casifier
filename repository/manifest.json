@@ -9,12 +9,12 @@
     "imageUrl":  "",
     "versions":  [
                      {
-                         "version":  "0.1.12.0",
-                         "changelog":  "Fix the Movie Versions page staying empty: it now loads as soon as it opens, shows a scanning status, and reports errors on the page.",
+                         "version":  "0.1.13.0",
+                         "changelog":  "Fix the Movie Versions page script being broken by Jellyfin\u0027s page translation, which left the page empty.",
                          "targetAbi":  "10.11.6.0",
-                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.12.0/Casifier_0.1.12.0.zip",
-                         "checksum":  "8629635d5e0f6da67228145954428bc9",
-                         "timestamp":  "2026-11-16T03:57:37Z"
+                         "sourceUrl":  "https://github.com/yesjapan/Casifier/releases/download/v0.1.13.0/Casifier_0.1.13.0.zip",
+                         "checksum":  "00fa62acc9403687b3ecb02b65019ddd",
+                         "timestamp":  "2026-11-16T04:08:50Z"
                      }
                  ]
 }

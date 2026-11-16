@@ -303,6 +303,8 @@
 
   <script type="text/javascript">
     (() => {
+      // No JS template literals in this file: before running a plugin page, Jellyfin's
+      // globalize.translateHtml replaces every dollar-brace placeholder in the HTML, script included.
       // Jellyfin keeps earlier copies of a page in the DOM. The copy this script belongs to was
       // appended last, so bind to that one rather than the first match.
       const instances = document.querySelectorAll('#CasifierVersionsPage');
@@ -335,13 +337,13 @@
       const formatBytes = bytes => {
         if (!bytes) return null;
         const gb = bytes / 1024 ** 3;
-        return gb >= 1 ? `${gb.toFixed(1)} GB` : `${Math.round(bytes / 1024 ** 2)} MB`;
+        return gb >= 1 ? ('' + (gb.toFixed(1)) + " GB") : ('' + (Math.round(bytes / 1024 ** 2)) + " MB");
       };
 
       const formatRuntime = ticks => {
         if (!ticks) return null;
         const minutes = Math.round(ticks / 600000000);
-        return minutes >= 60 ? `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, '0')}m` : `${minutes}m`;
+        return minutes >= 60 ? ('' + (Math.floor(minutes / 60)) + "h " + (String(minutes % 60).padStart(2, '0')) + "m") : ('' + (minutes) + "m");
       };
 
       const isLower = version => !version.IsBest;
@@ -361,7 +363,7 @@
             try {
               return JSON.parse(body).Message || body;
             } catch {
-              return body || `Request failed (${error.status})`;
+              return body || ("Request failed (" + (error.status) + ")");
             }
           }
         } catch {
@@ -383,7 +385,7 @@
           stat(review.length, 'with unique features'),
           stat(formatBytes(reclaimable) || '0 GB', 'in versions with nothing unique'),
           unreachable
-            ? el('div', { className: 'cvNote', text: `${unreachable} ${unreachable === 1 ? 'copy was' : 'copies were'} skipped because the file couldn't be reached (offline drive or already deleted). Connect the drive and refresh to include ${unreachable === 1 ? 'it' : 'them'}.` })
+            ? el('div', { className: 'cvNote', text: ('' + (unreachable) + " " + (unreachable === 1 ? 'copy was' : 'copies were') + " skipped because the file couldn't be reached (offline drive or already deleted). Connect the drive and refresh to include " + (unreachable === 1 ? 'it' : 'them') + ".") })
             : null
         );
       };
@@ -399,7 +401,7 @@
       const describeAudio = track => [
         track.Language,
         [track.Format, track.Channels].filter(Boolean).join(' '),
-        track.Title && `“${track.Title}”`,
+        track.Title && ("“" + (track.Title) + "”"),
         track.IsCommentary && 'commentary',
         track.IsDefault && 'default',
         track.IsExternal && 'external file'
@@ -408,7 +410,7 @@
       const describeSubtitle = track => [
         track.Language,
         track.Format,
-        track.Title && `“${track.Title}”`,
+        track.Title && ("“" + (track.Title) + "”"),
         track.IsForced && 'forced',
         track.IsHearingImpaired && 'SDH',
         track.IsExternal && 'external file'
@@ -418,7 +420,7 @@
         if (version.IsBest) {
           return el('div', { className: 'cvStatus best' },
             'Best version, kept.',
-            version.UniqueFeatures.length ? el('ul', null, version.UniqueFeatures.map(f => el('li', { text: `Only here: ${f}` }))) : null);
+            version.UniqueFeatures.length ? el('ul', null, version.UniqueFeatures.map(f => el('li', { text: ("Only here: " + (f)) }))) : null);
         }
         if (version.UniqueFeatures.length) {
           return el('div', { className: 'cvStatus unique' },
@@ -437,24 +439,22 @@
 
       const confirmText = (movie, version) => {
         const lines = [
-          `Delete the ${version.CaseLabel} version of "${movie.Name}"${movie.Year ? ` (${movie.Year})` : ''}?`,
+          ("Delete the " + (version.CaseLabel) + " version of \"" + (movie.Name) + "\"" + (movie.Year ? (" (" + (movie.Year) + ")") : '') + "?"),
           '',
           version.DeletesFolder
-            ? `Deletes the folder: ${version.DeleteTarget}
-(the video plus everything else in that folder: artwork, NFO, subtitles)`
-            : `Deletes the file: ${version.DeleteTarget}
-(plus external subtitle/audio files Jellyfin links to it)`
+            ? ("Deletes the folder: " + (version.DeleteTarget) + "\n(the video plus everything else in that folder: artwork, NFO, subtitles)")
+            : ("Deletes the file: " + (version.DeleteTarget) + "\n(plus external subtitle/audio files Jellyfin links to it)")
         ];
         if (movie.TitleMatchOnly) {
           lines.push('', 'WARNING: this copy was matched by title and year only. Make sure it is really the same film.');
         }
         const size = formatBytes(version.SizeBytes);
-        if (size) lines.push(`Size: ${size}`);
+        if (size) lines.push(("Size: " + (size)));
         if (version.UniqueFeatures.length) {
-          lines.push('', 'You will LOSE these. No other version has them:', ...version.UniqueFeatures.map(f => `  • ${f}`));
+          lines.push('', 'You will LOSE these. No other version has them:', ...version.UniqueFeatures.map(f => ("  • " + (f))));
         }
         if (version.Cautions.length) {
-          lines.push('', 'Not verified automatically:', ...version.Cautions.map(c => `  • ${c}`));
+          lines.push('', 'Not verified automatically:', ...version.Cautions.map(c => ("  • " + (c))));
         }
         lines.push('', 'This is permanently deleted from disk and cannot be undone.');
         return lines.join('\n');
@@ -468,16 +468,16 @@
         try {
           const result = await ApiClient.ajax({
             type: 'DELETE',
-            url: ApiClient.getUrl(`Casifier/Versions/${version.MovieId}/${encodeURIComponent(version.Id)}`),
+            url: ApiClient.getUrl(("Casifier/Versions/" + (version.MovieId) + "/" + (encodeURIComponent(version.Id)))),
             dataType: 'json'
           });
           const freed = formatBytes(result && result.FreedBytes);
-          showMessage(`${(result && result.Message) || 'Version deleted.'}${freed ? ` Freed ${freed}.` : ''} Jellyfin will drop it from the library shortly.`);
+          showMessage(('' + ((result && result.Message) || 'Version deleted.') + (freed ? (" Freed " + (freed) + ".") : '') + " Jellyfin will drop it from the library shortly."));
           await load(false);
         } catch (error) {
           showMessage(await readError(error), true);
           button.disabled = false;
-          button.textContent = `Delete ${version.CaseLabel} version`;
+          button.textContent = ("Delete " + (version.CaseLabel) + " version");
         }
       };
 
@@ -501,27 +501,27 @@
             is: 'emby-button',
             type: 'button',
             className: 'raised button-delete emby-button',
-            text: `Delete ${version.CaseLabel} version`
+            text: ("Delete " + (version.CaseLabel) + " version")
           });
           button.addEventListener('click', () => deleteVersion(movie, version, button));
           action = button;
         } else if (!version.IsBest) {
-          action = el('div', { className: 'cvBlocked', text: `Can't delete here: ${version.DeleteBlockedReason}` });
+          action = el('div', { className: 'cvBlocked', text: ("Can't delete here: " + (version.DeleteBlockedReason)) });
         }
 
         return el('div', { className: classes.join(' ') },
           el('div', { className: 'cvVersionHead' },
-            el('span', { className: `cvBadge ${version.CaseKey}`, text: version.CaseLabel }),
+            el('span', { className: ("cvBadge " + (version.CaseKey)), text: version.CaseLabel }),
             el('span', { className: 'cvVersionName', text: version.Name })),
           el('div', { className: 'cvSpecs', text: specs }),
           el('div', { className: 'cvRow' }, el('span', { className: 'cvRowLabel', text: 'Audio' }), chips(version.AudioLanguages)),
           el('div', { className: 'cvRow' }, el('span', { className: 'cvRowLabel', text: 'Subtitles' }), chips(version.SubtitleLanguages)),
           renderStatus(version),
           el('details', null,
-            el('summary', { text: `${version.AudioTracks.length} audio · ${version.SubtitleTracks.length} subtitle tracks` }),
+            el('summary', { text: ('' + (version.AudioTracks.length) + " audio · " + (version.SubtitleTracks.length) + " subtitle tracks") }),
             el('ul', { className: 'cvTracks' },
-              version.AudioTracks.map(track => el('li', { text: `Audio: ${describeAudio(track)}` })),
-              version.SubtitleTracks.map(track => el('li', { text: `Subtitle: ${describeSubtitle(track)}` })))),
+              version.AudioTracks.map(track => el('li', { text: ("Audio: " + (describeAudio(track))) })),
+              version.SubtitleTracks.map(track => el('li', { text: ("Subtitle: " + (describeSubtitle(track))) })))),
           el('div', { className: 'cvPath', text: version.Path }),
           action ? el('div', { className: 'cvActions' }, action) : null);
       };
@@ -541,11 +541,11 @@
             poster,
             el('div', null,
               el('h3', { className: 'cvMovieTitle' },
-                el('a', { href: `#/details?id=${movie.MovieId}`, text: movie.Name })),
+                el('a', { href: ("#/details?id=" + (movie.MovieId)), text: movie.Name })),
               el('div', { className: 'cvMovieMeta', text: [
                 movie.Year,
-                `${movie.Versions.length} versions`,
-                movie.MatchedBy.length ? `matched by ${movie.MatchedBy.join(', ')}` : null
+                ('' + (movie.Versions.length) + " versions"),
+                movie.MatchedBy.length ? ("matched by " + (movie.MatchedBy.join(', '))) : null
               ].filter(Boolean).join(' · ') }),
               movie.TitleMatchOnly
                 ? el('div', { className: 'cvMatchWarn', text: 'Matched by title and year only. Check these are the same film before deleting.' })
@@ -592,7 +592,7 @@
             render();
           } catch (error) {
             summary.replaceChildren();
-            showMessage(`Could not load movie versions: ${await readError(error)}`, true);
+            showMessage(("Could not load movie versions: " + (await readError(error))), true);
           } finally {
             Dashboard.hideLoadingMsg();
             loading = null;
